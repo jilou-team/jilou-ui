@@ -1,7 +1,6 @@
 name: Commit checker
 
-on:
-  push:
+on: push
 
 jobs:
   build:
