@@ -18,10 +18,29 @@ jobs:
           java-version: '23'
           distribution: 'temurin'
 
-      # Build the project
+      # Cache Sonar
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      # Cache Gradle
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      # Build
       - name: Build
         run: ./gradlew clean build
 
-      # Run tests
-      - name: Test
-        run: ./gradlew test
+      # Test and Sonar Check the project
+      - name: Test and Sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: ./gradlew test sonar --info

@@ -2,6 +2,7 @@ import org.gradle.internal.os.OperatingSystem
 
 plugins {
     id 'java'
+    id "org.sonarqube" version "5.1.0.4882"
 }
 
 project.ext.lwjglVersion = "3.3.4"
@@ -28,6 +29,13 @@ switch (OperatingSystem.current()) {
 
 group = 'com.jilou.ui'
 version = '0.1.0'
+
+sonar {
+    properties {
+        property "sonar.projectKey", "jilou-team_jilou-ui_a8e3e37d-e677-49a6-82fb-07e6d4967b21"
+        property "sonar.projectName", "jilou-ui"
+    }
+}
 
 repositories {
     mavenCentral()
