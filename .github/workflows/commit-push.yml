@@ -77,10 +77,10 @@ jobs:
         run: |
           echo "Listing files in the workspace before setting permissions"
           ls -la $GITHUB_WORKSPACE  # Weitere Prüfung
-          chmod +x $GITHUB_WORKSPACE/gradlew  # Gradle Wrapper ausführbar machen
+          chmod +x gradlew  # Gradle Wrapper ausführbar machen (direkt ohne vollen Pfad)
 
       - name: Run Gradle Build and Sonar
-        run: $GITHUB_WORKSPACE/gradlew build sonar --info
+        run: ./gradlew build sonar --info  # Den Wrapper direkt ausführen
 
   handle-sonar-failure-push:
     runs-on: ubuntu-latest
