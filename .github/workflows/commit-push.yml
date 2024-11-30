@@ -11,6 +11,8 @@ jobs:
       # Code check out
       - name: Check out Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # Use java 23
       - name: Set up Java 23
@@ -57,7 +59,10 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
-      # Build + Sonar check
+      - name: Generate Coverage Report
+        run: ./gradlew jacocoTestReport
+
+      # Build and Sonar qube
       - name: Build and Sonar
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
