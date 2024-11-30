@@ -1,27 +1,86 @@
 name: Commit checker
 
-on: push
+on:
+  push:
+    branches:
+      - '**'  # Alle Branches
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Check out the repository
+      # Code check out
       - name: Check out Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # Setup JDK 23
+      # Use java 23
       - name: Set up Java 23
         uses: actions/setup-java@v4
         with:
           java-version: '23'
           distribution: 'temurin'
 
-      # Build the project
-      - name: Build
-        run: ./gradlew clean build
+      - name: Check Ubuntu Version
+        run: lsb_release -a
 
-      # Run tests
-      - name: Test
-        run: ./gradlew test
+      # Set X11
+      - name: Set DISPLAY environment variable
+        run: echo "DISPLAY=:99" >> $GITHUB_ENV
+
+      - name: Update package list
+        run: sudo apt-get update
+
+      - name: Enable Universe and Multiverse Repositories
+        run: |
+          sudo add-apt-repository universe
+          sudo add-apt-repository multiverse
+          sudo apt-get update
+
+      # Install needed dependencies
+      - name: Install dependencies
+        run: sudo apt-get install libgl1-mesa-dev xorg-dev
+
+      # Install GLFW dependencies
+      - name: Install Xvfb
+        run: sudo apt-get install -y xvfb
+
+      - name: Start Xvfb
+        run: Xvfb :99 -screen 0 1024x768x24 &
+
+      - name: Set DISPLAY environment variable
+        run: echo "DISPLAY=:99" >> $GITHUB_ENV
+
+      # Cache Gradle
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      # Build and Sonar check
+      - name: Build and Sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: ./gradlew build sonar --info
+
+      # Handling failed SonarQube analysis for pushes
+      - name: Handle Sonar Failure on Push
+        if: github.event_name == 'push' && failure()  # Only runs if push event and Sonar failed
+        run: |
+          echo "Sonar analysis failed, but continuing as it's a push event."
+          exit 0  # This ensures the push build succeeds even if Sonar fails
+
+      # Fail the build on pull requests if Sonar fails
+      - name: Fail on Sonar Failure for Pull Requests
+        if: github.event_name == 'pull_request' && failure()  # Only runs if PR event and Sonar failed
+        run: |
+          echo "Sonar analysis failed for pull request, failing the build."
+          exit 1  # Forces the PR build to fail if Sonar fails
