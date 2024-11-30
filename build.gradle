@@ -43,7 +43,6 @@ sonar {
         property "sonar.java.binaries", "$buildDir/classes"
         property "sonar.coverage.exclusions", "**/examples/**"
         property "sonar.java.coveragePlugin", "jacoco"
-        property "sonar.jacoco.reportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
     }
 }
 
