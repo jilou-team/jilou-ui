@@ -40,14 +40,14 @@ jobs:
         run: sudo apt-get install libgl1-mesa-dev xorg-dev
 
       # Install GLFW dependencies
-      - name: Install GLFW dependencies
-        run: sudo apt-get update && sudo apt-get install -y \
-          libx11-dev \
-          libxcursor-dev \
-          libxrandr-dev \
-          libxinerama-dev \
-          libxi-dev \
-          libgl1-mesa-dev
+      - name: Install Xvfb
+        run: sudo apt-get install -y xvfb
+
+      - name: Start Xvfb
+        run: Xvfb :99 -screen 0 1024x768x24 &
+
+      - name: Set DISPLAY environment variable
+        run: echo "DISPLAY=:99" >> $GITHUB_ENV
 
       # Cache Gradle
       - name: Cache Gradle packages
