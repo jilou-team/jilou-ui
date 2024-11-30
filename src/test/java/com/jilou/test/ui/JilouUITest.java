@@ -2,10 +2,13 @@ package com.jilou.test.ui;
 
 import com.jilou.ui.JilouUI;
 import org.junit.jupiter.api.Test;
+import org.lwjgl.glfw.GLFW;
+import org.mockito.MockedStatic;
 
 import java.lang.reflect.Constructor;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class JilouUITest {
 
@@ -40,6 +43,17 @@ class JilouUITest {
         assertThrows(IllegalArgumentException.class, () -> {
             throw new IllegalArgumentException();
         });
+    }
+
+    @Test
+    void testNativeCWrongLoad() {
+        try(MockedStatic<GLFW> glfwMock = mockStatic(GLFW.class)) {
+            glfwMock.when(GLFW::glfwInit).thenReturn(false);
+
+            assertThrows(IllegalStateException.class, () -> {
+                JilouUI.load(new String[]{});
+            });
+        }
     }
 
 }
