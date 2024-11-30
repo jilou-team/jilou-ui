@@ -3,6 +3,8 @@ package com.jilou.ui;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.system.Configuration;
+import org.lwjgl.system.MemoryUtil;
 
 public final class JilouUI {
 
@@ -38,8 +40,10 @@ public final class JilouUI {
      * @throws IllegalStateException if the check was failed.
      */
     private static void generateCLibraryNatives() {
+        Configuration.DEBUG.set(true);
         if (!(GLFW.glfwInit())) {
             LOGGER.fatal("Failed to initialize GLFW");
+            GLFW.glfwSetErrorCallback((error, description) -> LOGGER.error("GLFW error: {}, {}", error, MemoryUtil.memUTF8(description)));
             throw new IllegalStateException("Failed to initialize GLFW");
         }
     }
