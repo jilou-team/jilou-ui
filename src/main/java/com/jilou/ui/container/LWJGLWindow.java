@@ -94,7 +94,7 @@ public abstract class LWJGLWindow {
     }
 
     public void stop() {
-        if (windowThread == null || !windowThread.isAlive()) {
+        if (windowThread != null && windowThread.isAlive()) {
             close();
             try {
                 windowThread.join();
@@ -140,6 +140,7 @@ public abstract class LWJGLWindow {
 
     public void hide() {
         if(isVisible()) {
+            windowStates = WindowStates.INACTIVE;
             awaitHandle(() -> GLFW.glfwHideWindow(getWindowHandle()));
         }
     }
@@ -150,6 +151,7 @@ public abstract class LWJGLWindow {
 
     public void show() {
         if(!isVisible()) {
+            windowStates = WindowStates.ACTIVE;
             awaitHandle(() -> GLFW.glfwShowWindow(getWindowHandle()));
         }
     }
@@ -216,10 +218,6 @@ public abstract class LWJGLWindow {
         this.backend = backend;
     }
 
-    public void useContext() {
-        GLFW.glfwMakeContextCurrent(context.windowHandle());
-        GL.setCapabilities(context.capabilities());
-    }
 
     /* ############################################################################################
      *
@@ -303,6 +301,14 @@ public abstract class LWJGLWindow {
         return height;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public Thread getWindowThread() {
+        return windowThread;
+    }
+
     public WindowStates getWindowStates() {
         return windowStates;
     }
@@ -375,6 +381,7 @@ public abstract class LWJGLWindow {
 
         LOGGER.info("Native window created successfully with backend [ {} ]", backend);
         windowStates = WindowStates.INACTIVE;
+        nativeWindows.add(this);
     }
 
     protected void initBackend() {
