@@ -19,7 +19,7 @@ jobs:
       - name: Verify gradlew file exists
         run: |
           echo "Listing files in the workspace"
-          ls -la $GITHUB_WORKSPACE  # Prüfe, ob gradlew im richtigen Verzeichnis vorhanden ist
+          ls -la $GITHUB_WORKSPACE
 
   setup:
     runs-on: ubuntu-latest
@@ -55,6 +55,11 @@ jobs:
 
       - name: Start Xvfb
         run: Xvfb :99 -screen 0 1024x768x24 &
+
+      - name: Verify gradlew file exists 2
+        run: |
+          echo "Listing files in the workspace"
+          ls -la $GITHUB_WORKSPACE
 
   build:
     runs-on: ubuntu-latest
