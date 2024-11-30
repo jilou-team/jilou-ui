@@ -34,13 +34,9 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
-      # Build
-      - name: Build
-        run: ./gradlew clean build
-
       # Test and Sonar Check the project
-      - name: Test and Sonar
+      - name: Build and Sonar
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: ./gradlew test sonar --info
+        run: ./gradlew build sonar --info
