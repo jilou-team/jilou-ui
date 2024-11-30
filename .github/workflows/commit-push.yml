@@ -7,6 +7,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      # Fetch X11 Server
+      - name: Set DISPLAY environment variable
+        run: echo "DISPLAY=:99" >> $GITHUB_ENV
+
       # Check out the repository
       - name: Check out Code
         uses: actions/checkout@v4
