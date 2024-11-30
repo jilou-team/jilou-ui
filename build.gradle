@@ -32,7 +32,7 @@ group = 'com.jilou.ui'
 version = '0.1.0'
 
 jacoco {
-    toolVersion = "0.8.10" // Aktuelle Version
+    toolVersion = "0.8.12" // Aktuelle Version
 }
 
 sonar {
