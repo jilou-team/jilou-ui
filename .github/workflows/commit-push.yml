@@ -6,26 +6,18 @@ on:
       - '**'  # Alle Branches
   pull_request:
     branches:
-      - main  # Nur PRs gegen den main Branch
+      - main
 
 jobs:
-  checkout:
+  build:
     runs-on: ubuntu-latest
 
     steps:
+      # Code check out
       - name: Check out Code
         uses: actions/checkout@v4
 
-      - name: Verify files after checkout
-        run: |
-          echo "Listing files in the workspace after checkout"
-          ls -la $GITHUB_WORKSPACE
-
-  setup:
-    runs-on: ubuntu-latest
-    needs: checkout
-
-    steps:
+      # Use java 23
       - name: Set up Java 23
         uses: actions/setup-java@v4
         with:
@@ -35,6 +27,7 @@ jobs:
       - name: Check Ubuntu Version
         run: lsb_release -a
 
+      # Set X11
       - name: Set DISPLAY environment variable
         run: echo "DISPLAY=:99" >> $GITHUB_ENV
 
@@ -47,66 +40,45 @@ jobs:
           sudo add-apt-repository multiverse
           sudo apt-get update
 
+      # Install needed dependencies
       - name: Install dependencies
         run: sudo apt-get install libgl1-mesa-dev xorg-dev
 
+      # Install GLFW dependencies
       - name: Install Xvfb
         run: sudo apt-get install -y xvfb
 
       - name: Start Xvfb
         run: Xvfb :99 -screen 0 1024x768x24 &
 
-  cache:
-    runs-on: ubuntu-latest
-    needs: setup
+      - name: Set DISPLAY environment variable
+        run: echo "DISPLAY=:99" >> $GITHUB_ENV
 
-    steps:
-      - name: Cache Gradle dependencies
+      # Cache Gradle
+      - name: Cache Gradle packages
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
-  build:
-    runs-on: ubuntu-latest
-    needs: cache
+      # Build and Sonar check
+      - name: Build and Sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: ./gradlew build sonar --info
 
-    steps:
-      - name: Manually clone repository
-        run: |
-          git clone https://github.com/${{ github.repository }} .
-          ls -la
-
-      - name: Ensure gradlew is executable
-        run: |
-          chmod +x ./gradlew
-
-      - name: Run Gradle Build and Sonar
-        run: |
-          echo "Running Gradle build and Sonar"
-          ./gradlew build sonar --info
-
-  handle-sonar-failure-push:
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.event_name == 'push' && failure()
-
-    steps:
+      # Handling failed SonarQube analysis for pushes
       - name: Handle Sonar Failure on Push
+        if: github.event_name == 'push' && failure()  # Only runs if push event and Sonar failed
         run: |
           echo "Sonar analysis failed, but continuing as it's a push event."
-          exit 0
+          exit 0  # This ensures the push build succeeds even if Sonar fails
 
-  fail-pr-build-on-sonar-failure:
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.event_name == 'pull_request' && failure()
-
-    steps:
+      # Fail the build on pull requests if Sonar fails
       - name: Fail on Sonar Failure for Pull Requests
+        if: github.event_name == 'pull_request' && failure()  # Only runs if PR event and Sonar failed
         run: |
           echo "Sonar analysis failed for pull request, failing the build."
-          exit 1
+          exit 1  # Forces the PR build to fail if Sonar fails
