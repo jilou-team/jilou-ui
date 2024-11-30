@@ -82,12 +82,12 @@ jobs:
 
       - name: Ensure gradlew is executable
         run: |
-          chmod +x ./src/gradlew
+          chmod +x ./gradlew
 
       - name: Run Gradle Build and Sonar
         run: |
           echo "Running Gradle build and Sonar"
-          ./src/gradlew build sonar --info
+          ./gradlew build sonar --info
 
   handle-sonar-failure-push:
     runs-on: ubuntu-latest
