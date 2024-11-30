@@ -8,28 +8,24 @@ jobs:
 
     steps:
 
-      # Fetch X11 Server
-      - name: Set DISPLAY environment variable
-        run: echo "DISPLAY=:99" >> $GITHUB_ENV
-
-      # Check out the repository
+      # Code check out
       - name: Check out Code
         uses: actions/checkout@v4
 
-      # Setup JDK 23
+      # Use java 23
       - name: Set up Java 23
         uses: actions/setup-java@v4
         with:
           java-version: '23'
           distribution: 'temurin'
 
-      # Cache Sonar
-      - name: Cache SonarQube packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+      # Set X11
+      - name: Set DISPLAY environment variable
+        run: echo "DISPLAY=:99" >> $GITHUB_ENV
+
+      # Install needed dependencies
+      - name: Install dependencies
+        run: sudo apt-get install libgl1-mesa-dev xorg-dev
 
       # Cache Gradle
       - name: Cache Gradle packages
@@ -39,7 +35,7 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
-      # Test and Sonar Check the project
+      # Build + Sonar check
       - name: Build and Sonar
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
