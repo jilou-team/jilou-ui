@@ -75,6 +75,11 @@ jobs:
     needs: cache
 
     steps:
+      - name: Manually clone repository
+        run: |
+          git clone https://github.com/${{ github.repository }} .
+          ls -la
+
       - name: Ensure gradlew is executable
         run: |
           chmod +x ./src/gradlew
