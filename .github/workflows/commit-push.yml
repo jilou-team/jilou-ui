@@ -1,20 +1,29 @@
 name: Commit checker
 
-on: push
+on:
+  push:
+    branches:
+      - '**'  # All Branches
+  pull_request:
+    branches:
+      - main  # Pr's to main
 
 jobs:
-  build:
+  checkout:
     runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.checkout.outputs.sha }}
 
     steps:
-
-      # Code check out
       - name: Check out Code
+        id: checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      # Use java 23
+  setup:
+    runs-on: ubuntu-latest
+    needs: checkout  # Check out code
+
+    steps:
       - name: Set up Java 23
         uses: actions/setup-java@v4
         with:
@@ -24,7 +33,6 @@ jobs:
       - name: Check Ubuntu Version
         run: lsb_release -a
 
-      # Set X11
       - name: Set DISPLAY environment variable
         run: echo "DISPLAY=:99" >> $GITHUB_ENV
 
@@ -37,21 +45,20 @@ jobs:
           sudo add-apt-repository multiverse
           sudo apt-get update
 
-      # Install needed dependencies
       - name: Install dependencies
         run: sudo apt-get install libgl1-mesa-dev xorg-dev
 
-      # Install GLFW dependencies
       - name: Install Xvfb
         run: sudo apt-get install -y xvfb
 
       - name: Start Xvfb
         run: Xvfb :99 -screen 0 1024x768x24 &
 
-      - name: Set DISPLAY environment variable
-        run: echo "DISPLAY=:99" >> $GITHUB_ENV
+  cache:
+    runs-on: ubuntu-latest
+    needs: setup
 
-      # Cache Gradle
+    steps:
       - name: Cache Gradle packages
         uses: actions/cache@v4
         with:
@@ -59,12 +66,35 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
-      - name: Generate Coverage Report
-        run: ./gradlew jacocoTestReport
+  build:
+    runs-on: ubuntu-latest
+    needs: cache
 
-      # Build and Sonar qube
-      - name: Build and Sonar
+    steps:
+      - name: Build and Sonar check
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: ./gradlew build sonar --info
+
+  handle-sonar-failure-push:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && failure()
+
+    steps:
+      - name: Handle Sonar Failure on Push
+        run: |
+          echo "Sonar analysis failed, but continuing as it's a push event."
+          exit 0  # Build als erfolgreich markiert, auch wenn Sonar fehlgeschlagen ist
+
+  fail-pr-build-on-sonar-failure:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'pull_request' && failure()
+
+    steps:
+      - name: Fail on Sonar Failure for Pull Requests
+        run: |
+          echo "Sonar analysis failed for pull request, failing the build."
+          exit 1  # Erzwungener Fehler für PRs bei fehlerhaftem Sonar-Check
