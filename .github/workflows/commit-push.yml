@@ -17,7 +17,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Verify gradlew file exists
-        run: ls -la $GITHUB_WORKSPACE  # Prüfe, ob gradlew vorhanden ist
+        run: |
+          echo "Listing files in the workspace"
+          ls -la $GITHUB_WORKSPACE  # Prüfe, ob gradlew im Root-Verzeichnis vorhanden ist
 
   setup:
     runs-on: ubuntu-latest
@@ -73,7 +75,8 @@ jobs:
     steps:
       - name: Ensure gradlew is executable
         run: |
-          ls -la $GITHUB_WORKSPACE  # Liste des Verzeichnisses zur Überprüfung
+          echo "Listing files in the workspace before setting permissions"
+          ls -la $GITHUB_WORKSPACE  # Weitere Prüfung
           chmod +x $GITHUB_WORKSPACE/gradlew  # Gradle Wrapper ausführbar machen
 
       - name: Run Gradle Build and Sonar
