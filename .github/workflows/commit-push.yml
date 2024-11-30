@@ -19,9 +19,21 @@ jobs:
           java-version: '23'
           distribution: 'temurin'
 
+      - name: Check Ubuntu Version
+        run: lsb_release -a
+
       # Set X11
       - name: Set DISPLAY environment variable
         run: echo "DISPLAY=:99" >> $GITHUB_ENV
+
+      - name: Update package list
+        run: sudo apt-get update
+
+      - name: Enable Universe and Multiverse Repositories
+        run: |
+          sudo add-apt-repository universe
+          sudo add-apt-repository multiverse
+          sudo apt-get update
 
       # Install needed dependencies
       - name: Install dependencies
