@@ -3,10 +3,10 @@ name: Commit checker
 on:
   push:
     branches:
-      - '**'
+      - '**'  # Alle Branches
   pull_request:
     branches:
-      - main
+      - main  # Nur PRs gegen den main Branch
 
 jobs:
   checkout:
@@ -15,6 +15,9 @@ jobs:
     steps:
       - name: Check out Code
         uses: actions/checkout@v4
+
+      - name: Verify gradlew file exists
+        run: ls -la $GITHUB_WORKSPACE  # Prüfe, ob gradlew vorhanden ist
 
   setup:
     runs-on: ubuntu-latest
@@ -68,11 +71,13 @@ jobs:
     needs: cache
 
     steps:
-      - name: Set working directory for Gradle
+      - name: Ensure gradlew is executable
         run: |
-          cd $GITHUB_WORKSPACE
-          chmod +x gradlew  # Stelle sicher, dass gradlew ausführbar ist
-          ./gradlew build sonar --info
+          ls -la $GITHUB_WORKSPACE  # Liste des Verzeichnisses zur Überprüfung
+          chmod +x $GITHUB_WORKSPACE/gradlew  # Gradle Wrapper ausführbar machen
+
+      - name: Run Gradle Build and Sonar
+        run: $GITHUB_WORKSPACE/gradlew build sonar --info
 
   handle-sonar-failure-push:
     runs-on: ubuntu-latest
