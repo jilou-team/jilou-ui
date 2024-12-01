@@ -94,4 +94,9 @@ public abstract class AbstractRenderer implements Renderer {
     public boolean upToDate() {
         return upToDate;
     }
+
+    @Override
+    public boolean isInitialized() {
+        return initialized;
+    }
 }

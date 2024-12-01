@@ -2,6 +2,8 @@ package com.jilou.ui.container;
 
 import com.jilou.ui.enums.Backend;
 import com.jilou.ui.enums.WindowStates;
+import com.jilou.ui.logic.Renderer;
+import com.jilou.ui.logic.graphics.WidgetBackgroundRenderer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
@@ -24,6 +26,8 @@ public abstract class LWJGLWindow {
 
     public static final int DEFAULT_WIDTH = 800;
     public static final int DEFAULT_HEIGHT = 600;
+
+    private final List<Renderer> renderers = new ArrayList<>();
 
     private final List<LWJGLWindow> nativeWindows = new ArrayList<>();
 
@@ -218,6 +222,47 @@ public abstract class LWJGLWindow {
         this.backend = backend;
     }
 
+    /* ############################################################################################
+     *
+     *                                    Renderer Function
+     *
+     * ############################################################################################ */
+
+    public void addRenderer(Renderer renderer) {
+        if(hasRenderer(renderer)) {
+            return;
+        }
+        renderers.add(renderer);
+        LOGGER.info("Renderer [ {} ] added to [ {} ]", renderer.getName(), getWindowHandle());
+    }
+
+    public void removeRenderer(Renderer renderer) {
+
+    }
+
+    public void removeRenderer(String name) {
+
+    }
+
+    public void removeAllRenderers() {
+
+    }
+
+    public boolean hasRenderer(Renderer renderer) {
+        return false;
+    }
+
+    public boolean hasRenderer(String name) {
+        return false;
+    }
+
+    public Renderer getRenderer(String name) {
+        return null;
+    }
+
+    public List<Renderer> getRenderers() {
+        return renderers;
+    }
 
     /* ############################################################################################
      *
@@ -378,6 +423,7 @@ public abstract class LWJGLWindow {
         }
 
         initBackend();
+        registerDefaultRenderers();
 
         LOGGER.info("Native window created successfully with backend [ {} ]", backend);
         windowStates = WindowStates.INACTIVE;
@@ -410,6 +456,15 @@ public abstract class LWJGLWindow {
         }
     }
 
+    /* ############################################################################################
+     *
+     *                                      Internal Registry
+     *
+     * ############################################################################################ */
+
+    private void registerDefaultRenderers() {
+        addRenderer(new WidgetBackgroundRenderer());
+    }
 
     /* ############################################################################################
      *
