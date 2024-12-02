@@ -5,6 +5,22 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryUtil;
 
+/**
+ * The core class of the JilouUI framework.
+ * <p>
+ * JilouUI is a UI framework built natively on {@link GLFW}, utilizing the C programming language as its foundation.
+ * It is not a standalone program but rather a library designed to be integrated into other projects.
+ * </p>
+ * <p>
+ * For more information, visit our GitHub repository:
+ * <a href="https://github.com/your-repo-link">https://github.com/jilou-team/jilou-ui</a>
+ * </p>
+ * <p>
+ * This class serves as the central component of the library, orchestrating the key functionalities of JilouUI.
+ * </p>
+ * @since 0.1.0
+ * @author Daniel Ramke
+ */
 public final class JilouUI {
 
     private static final Logger LOGGER = LogManager.getLogger(JilouUI.class);

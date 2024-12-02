@@ -9,7 +9,7 @@ public class ExampleWindowTest {
     public static void main(String[] args) {
         JilouUI.load(args);
 
-        Window window = new Window("Test");
+        Window window = new Window();
         window.setBackend(Backend.VULKAN);
         window.start();
         window.show();
