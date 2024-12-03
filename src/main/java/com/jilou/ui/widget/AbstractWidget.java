@@ -3,6 +3,10 @@ package com.jilou.ui.widget;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @since 0.1.0
+ * @author Daniel Ramke
+ */
 public abstract class AbstractWidget {
 
     private final List<AbstractWidget> children = new ArrayList<>();

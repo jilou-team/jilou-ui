@@ -39,8 +39,8 @@ public class WidgetBackgroundRenderer extends AbstractWidgetRenderer {
         this.testWidget = new Rectangle("Test");
         testWidget.setHeight(50.0);
         testWidget.setWidth(150.0);
-        testWidget.setPositionX(0.0);
-        testWidget.setPositionY(0.0);
+        testWidget.setPositionX(200.0);
+        testWidget.setPositionY(100.0);
     }
 
     /**
@@ -56,7 +56,7 @@ public class WidgetBackgroundRenderer extends AbstractWidgetRenderer {
     @Override
     public void render(List<?> widgets) {
         /* render the given list */
-        GL11.glColor3f(1.0f, 1.0f, 1.0f);
+        GL11.glColor3f(0.2f, 5.0f, 0.0f);
 
         GL11.glBegin(GL11.GL_QUADS);
         GL11.glVertex2f((float) testWidget.getPositionX(), (float) testWidget.getPositionY());
