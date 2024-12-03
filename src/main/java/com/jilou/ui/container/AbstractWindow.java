@@ -27,6 +27,7 @@ package com.jilou.ui.container;
 public abstract class AbstractWindow extends LWJGLWindow {
 
     private boolean renderAtMinimized;
+    private boolean useDefaultCallbacks;
 
     /**
      * Constructs an {@link AbstractWindow} with the specified localized name.
@@ -36,6 +37,7 @@ public abstract class AbstractWindow extends LWJGLWindow {
     protected AbstractWindow(String localizedName) {
         super(localizedName);
         this.renderAtMinimized = false;
+        this.useDefaultCallbacks = true;
     }
 
     /**
@@ -62,6 +64,7 @@ public abstract class AbstractWindow extends LWJGLWindow {
     @Override
     protected void initialize() {
         generateNativeWindow();
+        loadDefaultCallbacks();
         setup();
     }
 
@@ -93,5 +96,26 @@ public abstract class AbstractWindow extends LWJGLWindow {
      */
     public boolean isRenderAtMinimized() {
         return renderAtMinimized;
+    }
+
+    public void setUseDefaultCallbacks(boolean useDefaultCallbacks) {
+        this.useDefaultCallbacks = useDefaultCallbacks;
+    }
+
+    public boolean isUseDefaultCallbacks() {
+        return useDefaultCallbacks;
+    }
+
+    private void loadDefaultCallbacks() {
+        if(useDefaultCallbacks) {
+            addPositionCallback((handle, posX, posY) -> {
+
+            });
+
+            addFrameBufferSizeCallback((handle, width, height) -> {
+                setWidth(width);
+                setHeight(height);
+            });
+        }
     }
 }
