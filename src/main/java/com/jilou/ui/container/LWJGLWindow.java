@@ -6,11 +6,31 @@ import com.jilou.ui.enums.Backend;
 import com.jilou.ui.enums.WindowStates;
 import com.jilou.ui.logic.AbstractRenderer;
 import com.jilou.ui.logic.Renderer;
+import com.jilou.ui.logic.callbacks.NativeCallbacks.*;
 import com.jilou.ui.logic.graphics.WidgetBackgroundRenderer;
 import com.jilou.ui.logic.graphics.tools.GLCalculate;
+import com.jilou.ui.logic.input.KeyBoard;
+import com.jilou.ui.logic.input.Mouse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWCharCallbackI;
+import org.lwjgl.glfw.GLFWCharModsCallbackI;
+import org.lwjgl.glfw.GLFWCursorEnterCallbackI;
+import org.lwjgl.glfw.GLFWCursorPosCallbackI;
+import org.lwjgl.glfw.GLFWFramebufferSizeCallbackI;
+import org.lwjgl.glfw.GLFWKeyCallbackI;
+import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
+import org.lwjgl.glfw.GLFWScrollCallbackI;
+import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
+import org.lwjgl.glfw.GLFWWindowFocusCallback;
+import org.lwjgl.glfw.GLFWWindowFocusCallbackI;
+import org.lwjgl.glfw.GLFWWindowIconifyCallbackI;
+import org.lwjgl.glfw.GLFWWindowMaximizeCallbackI;
+import org.lwjgl.glfw.GLFWWindowPosCallbackI;
+import org.lwjgl.glfw.GLFWWindowRefreshCallbackI;
+import org.lwjgl.glfw.GLFWWindowSizeCallbackI;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLCapabilities;
@@ -70,6 +90,25 @@ public abstract class LWJGLWindow {
     private String title;
     private int width;
     private int height;
+
+    private NativeSizeCallback sizeCallback;
+    private NativePositionCallback positionCallback;
+    private NativeFrameBufferSizeCallback frameBufferSizeCallback;
+
+    private NativeScrollCallback scrollCallback;
+    private NativeMouseButtonCallback mouseButtonCallback;
+    private NativeMouseEnteredCallback mouseEnteredCallback;
+    private NativeMousePositionCallback mousePositionCallback;
+
+    private NativeKeyCallback keyCallback;
+    private NativeCharCallback charCallback;
+    private NativeCharModsCallback charModsCallback;
+
+    private NativeCloseCallback closeCallback;
+    private NativeFocusCallback focusCallback;
+    private NativeMaximizedCallback maximizedCallback;
+    private NativeMinimizedCallback minimizedCallback;
+    private NativeRefreshCallback refreshCallback;
 
     /**
      * Constructor create a new native Window which used {@link GLFW} raw. It is recommended to use
@@ -695,6 +734,148 @@ public abstract class LWJGLWindow {
 
     /* ############################################################################################
      *
+     *                                       Callbacks
+     *
+     * ############################################################################################ */
+
+    /**
+     * Adds a size callback to handle window size changes.
+     *
+     * @param lambda the {@link GLFWWindowSizeCallbackI} implementation to handle size changes
+     */
+    public void addSizeCallback(GLFWWindowSizeCallbackI lambda) {
+        this.sizeCallback.add(lambda);
+    }
+
+    /**
+     * Adds a position callback to handle window position changes.
+     *
+     * @param lambda the {@link GLFWWindowPosCallbackI} implementation to handle position changes
+     */
+    public void addPositionCallback(GLFWWindowPosCallbackI lambda) {
+        this.positionCallback.add(lambda);
+    }
+
+    /**
+     * Adds a framebuffer size callback to handle framebuffer size changes.
+     *
+     * @param lambda the {@link GLFWFramebufferSizeCallbackI} implementation to handle framebuffer size changes
+     */
+    public void addFrameBufferSizeCallback(GLFWFramebufferSizeCallbackI lambda) {
+        this.frameBufferSizeCallback.add(lambda);
+    }
+
+    /**
+     * Adds a close callback to handle window close events.
+     *
+     * @param lambda the {@link GLFWWindowCloseCallbackI} implementation to handle close events
+     */
+    public void addCloseCallback(GLFWWindowCloseCallbackI lambda) {
+        this.closeCallback.add(lambda);
+    }
+
+    /**
+     * Adds a focus callback to handle window focus changes.
+     *
+     * @param lambda the {@link GLFWWindowFocusCallbackI} implementation to handle focus changes
+     */
+    public void addFocusCallback(GLFWWindowFocusCallbackI lambda) {
+        this.focusCallback.add(lambda);
+    }
+
+    /**
+     * Adds a maximize callback to handle window maximize events.
+     *
+     * @param lambda the {@link GLFWWindowMaximizeCallbackI} implementation to handle maximize events
+     */
+    public void addMaximizeCallback(GLFWWindowMaximizeCallbackI lambda) {
+        this.maximizedCallback.add(lambda);
+    }
+
+    /**
+     * Adds a minimize callback to handle window minimize events.
+     *
+     * @param lambda the {@link GLFWWindowIconifyCallbackI} implementation to handle minimize events
+     */
+    public void addMinimizeCallback(GLFWWindowIconifyCallbackI lambda) {
+        this.minimizedCallback.add(lambda);
+    }
+
+    /**
+     * Adds a refresh callback to handle window refresh events.
+     *
+     * @param lambda the {@link GLFWWindowRefreshCallbackI} implementation to handle refresh events
+     */
+    public void addRefreshCallback(GLFWWindowRefreshCallbackI lambda) {
+        this.refreshCallback.add(lambda);
+    }
+
+    /**
+     * Adds a key callback to handle keyboard input events.
+     *
+     * @param lambda the {@link GLFWKeyCallbackI} implementation to handle key events
+     */
+    public void addKeyCallback(GLFWKeyCallbackI lambda) {
+        this.keyCallback.add(lambda);
+    }
+
+    /**
+     * Adds a character callback to handle character input events.
+     *
+     * @param lambda the {@link GLFWCharCallbackI} implementation to handle character input
+     */
+    public void addCharCallback(GLFWCharCallbackI lambda) {
+        this.charCallback.add(lambda);
+    }
+
+    /**
+     * Adds a character mods callback to handle character input events with modifier keys.
+     *
+     * @param lambda the {@link GLFWCharModsCallbackI} implementation to handle character input with modifiers
+     */
+    public void addCharModCallback(GLFWCharModsCallbackI lambda) {
+        this.charModsCallback.add(lambda);
+    }
+
+    /**
+     * Adds a mouse button callback to handle mouse button events.
+     *
+     * @param lambda the {@link GLFWMouseButtonCallbackI} implementation to handle mouse button events
+     */
+    public void addMouseButtonCallback(GLFWMouseButtonCallbackI lambda) {
+        this.mouseButtonCallback.add(lambda);
+    }
+
+    /**
+     * Adds a mouse entered callback to handle mouse cursor entry and exit events.
+     *
+     * @param lambda the {@link GLFWCursorEnterCallbackI} implementation to handle mouse entry/exit events
+     */
+    public void addMouseEnteredCallback(GLFWCursorEnterCallbackI lambda) {
+        this.mouseEnteredCallback.add(lambda);
+    }
+
+    /**
+     * Adds a mouse position callback to handle mouse movement events.
+     *
+     * @param lambda the {@link GLFWCursorPosCallbackI} implementation to handle mouse position changes
+     */
+    public void addMousePositionCallback(GLFWCursorPosCallbackI lambda) {
+        this.mousePositionCallback.add(lambda);
+    }
+
+    /**
+     * Adds a scroll callback to handle mouse scroll wheel events.
+     *
+     * @param lambda the {@link GLFWScrollCallbackI} implementation to handle scroll wheel events
+     */
+    public void addScrollCallback(GLFWScrollCallbackI lambda) {
+        this.scrollCallback.add(lambda);
+    }
+
+
+    /* ############################################################################################
+     *
      *                                  Internal Functions (Package)
      *
      * ############################################################################################ */
@@ -744,6 +925,7 @@ public abstract class LWJGLWindow {
         }
 
         initBackend();
+        bindGLFWCallbacks();
         registerDefaultRenderers();
 
         LOGGER.info("Native window created successfully with backend [ {} ]", backend);
@@ -860,6 +1042,89 @@ public abstract class LWJGLWindow {
 
         GLFW.glfwSwapBuffers(windowHandle);
         GLFW.glfwPollEvents();
+    }
+
+    /**
+     * Binds all GLFW window callbacks to their respective native callback implementations.
+     * <p>
+     * This method initializes and sets up each GLFW callback for the specified window.
+     * It registers the following callbacks:
+     * </p>
+     * <ul>
+     *   <li>Window Size</li>
+     *   <li>Window Position</li>
+     *   <li>Framebuffer Size</li>
+     *   <li>Window Close</li>
+     *   <li>Window Focus</li>
+     *   <li>Window Iconify (Minimize)</li>
+     *   <li>Window Maximize</li>
+     *   <li>Window Refresh</li>
+     *   <li>Character Input</li>
+     *   <li>Character Input with Modifiers</li>
+     *   <li>Key Input</li>
+     *   <li>Mouse Button</li>
+     *   <li>Mouse Position</li>
+     *   <li>Mouse Enter/Exit</li>
+     *   <li>Mouse Scroll</li>
+     * </ul>
+     * <p>
+     * Each callback is registered with GLFW and optionally supplemented with additional functionality
+     * through external handler methods such as {@code KeyBoard::callback} or {@code Mouse::callback}.
+     * </p>
+     *
+     * @see GLFW
+     * @see Callbacks
+     */
+    private void bindGLFWCallbacks() {
+        this.sizeCallback = new NativeSizeCallback();
+        this.sizeCallback.add(GLFW.glfwSetWindowSizeCallback(windowHandle, sizeCallback));
+
+        this.positionCallback = new NativePositionCallback();
+        this.positionCallback.add(GLFW.glfwSetWindowPosCallback(windowHandle, positionCallback));
+
+        this.frameBufferSizeCallback = new NativeFrameBufferSizeCallback();
+        this.frameBufferSizeCallback.add(GLFW.glfwSetFramebufferSizeCallback(windowHandle, frameBufferSizeCallback));
+
+        this.closeCallback = new NativeCloseCallback();
+        this.closeCallback.add(GLFW.glfwSetWindowCloseCallback(windowHandle, closeCallback));
+
+        this.focusCallback = new NativeFocusCallback();
+        this.focusCallback.add(GLFW.glfwSetWindowFocusCallback(windowHandle, focusCallback));
+
+        this.minimizedCallback = new NativeMinimizedCallback();
+        this.minimizedCallback.add(GLFW.glfwSetWindowIconifyCallback(windowHandle, minimizedCallback));
+
+        this.maximizedCallback = new NativeMaximizedCallback();
+        this.maximizedCallback.add(GLFW.glfwSetWindowMaximizeCallback(windowHandle, maximizedCallback));
+
+        this.refreshCallback = new NativeRefreshCallback();
+        this.refreshCallback.add(GLFW.glfwSetWindowRefreshCallback(windowHandle, refreshCallback));
+
+        this.charCallback = new NativeCharCallback();
+        this.charCallback.add(GLFW.glfwSetCharCallback(windowHandle, charCallback));
+
+        this.charModsCallback = new NativeCharModsCallback();
+        this.charModsCallback.add(GLFW.glfwSetCharModsCallback(windowHandle, charModsCallback));
+
+        this.keyCallback = new NativeKeyCallback();
+        this.keyCallback.add(GLFW.glfwSetKeyCallback(windowHandle, keyCallback));
+        this.keyCallback.add(KeyBoard::callback);
+
+        this.mouseButtonCallback = new NativeMouseButtonCallback();
+        this.mouseButtonCallback.add(GLFW.glfwSetMouseButtonCallback(windowHandle, mouseButtonCallback));
+        this.mouseButtonCallback.add(Mouse::callback);
+
+        this.mousePositionCallback = new NativeMousePositionCallback();
+        this.mousePositionCallback.add(GLFW.glfwSetCursorPosCallback(windowHandle, mousePositionCallback));
+        this.mousePositionCallback.add(Mouse::positionCallback);
+
+        this.mouseEnteredCallback = new NativeMouseEnteredCallback();
+        this.mouseEnteredCallback.add(GLFW.glfwSetCursorEnterCallback(windowHandle, mouseEnteredCallback));
+        this.mouseEnteredCallback.add(Mouse::enteredCallback);
+
+        this.scrollCallback = new NativeScrollCallback();
+        this.scrollCallback.add(GLFW.glfwSetScrollCallback(windowHandle, scrollCallback));
+        this.scrollCallback.add(Mouse::scrollCallback);
     }
 
     /**
