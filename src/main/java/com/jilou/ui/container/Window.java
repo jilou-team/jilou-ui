@@ -1,7 +1,5 @@
 package com.jilou.ui.container;
 
-import org.lwjgl.opengl.GL11;
-
 /**
  * A concrete implementation of {@link AbstractWindow}, representing a basic window in the JilouUI library.
  * <p>
@@ -76,14 +74,7 @@ public class Window extends AbstractWindow {
      */
     @Override
     protected void render() {
-        GL11.glBegin(GL11.GL_TRIANGLES);
-        GL11.glColor3f(1.0f, 0.0f, 0.0f);
-        GL11.glVertex2f(-0.5f, -0.5f);
-        GL11.glColor3f(0.0f, 1.0f, 0.0f);
-        GL11.glVertex2f(0.5f, -0.5f);
-        GL11.glColor3f(0.0f, 0.0f, 1.0f);
-        GL11.glVertex2f(0.0f, 0.5f);
-        GL11.glEnd();
+        /**/
     }
 
     /**

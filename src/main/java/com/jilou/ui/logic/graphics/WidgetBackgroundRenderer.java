@@ -1,8 +1,8 @@
 package com.jilou.ui.logic.graphics;
 
 import com.jilou.ui.container.LWJGLWindow;
-import com.jilou.ui.logic.AbstractRenderer;
-import com.jilou.ui.logic.Renderer;
+import com.jilou.ui.widget.shapes.Rectangle;
+import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
@@ -25,6 +25,8 @@ import java.util.List;
  */
 public class WidgetBackgroundRenderer extends AbstractWidgetRenderer {
 
+    private final Rectangle testWidget;
+
     /**
      * Constructs a new {@code WidgetBackgroundRenderer}.
      * <p>
@@ -34,6 +36,11 @@ public class WidgetBackgroundRenderer extends AbstractWidgetRenderer {
      */
     public WidgetBackgroundRenderer() {
         super(null);
+        this.testWidget = new Rectangle("Test");
+        testWidget.setHeight(50.0);
+        testWidget.setWidth(150.0);
+        testWidget.setPositionX(200.0);
+        testWidget.setPositionY(100.0);
     }
 
     /**
@@ -49,6 +56,14 @@ public class WidgetBackgroundRenderer extends AbstractWidgetRenderer {
     @Override
     public void render(List<?> widgets) {
         /* render the given list */
+        GL11.glColor3f(0.2f, 5.0f, 0.0f);
+
+        GL11.glBegin(GL11.GL_QUADS);
+        GL11.glVertex2f((float) testWidget.getPositionX(), (float) testWidget.getPositionY());
+        GL11.glVertex2f((float) (testWidget.getPositionX() + testWidget.getWidth()), (float) testWidget.getPositionY());
+        GL11.glVertex2f((float) (testWidget.getPositionX() + testWidget.getWidth()), (float) (testWidget.getPositionY() + testWidget.getHeight()));
+        GL11.glVertex2f((float) testWidget.getPositionX(), (float) (testWidget.getPositionY() + testWidget.getHeight()));
+        GL11.glEnd();
     }
 
     /**

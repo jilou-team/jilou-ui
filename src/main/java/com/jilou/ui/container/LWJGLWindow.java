@@ -7,6 +7,7 @@ import com.jilou.ui.enums.WindowStates;
 import com.jilou.ui.logic.AbstractRenderer;
 import com.jilou.ui.logic.Renderer;
 import com.jilou.ui.logic.graphics.WidgetBackgroundRenderer;
+import com.jilou.ui.logic.graphics.tools.GLCalculate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
@@ -72,7 +73,7 @@ public abstract class LWJGLWindow {
 
     /**
      * Constructor create a new native Window which used {@link GLFW} raw. It is recommended to use
-     * {@link AbstractWindow} if you wish to create your own one wich is compatible with {@link JilouUI} itself.
+     * {@link AbstractWindow} if you wish to create your own one which is compatible with {@link JilouUI} itself.
      * This class can be used of you write your own project which not need our Features.
      * @param localizedName the identifier as {@link String}
      */
@@ -844,8 +845,14 @@ public abstract class LWJGLWindow {
      * Function update {@link Backend#OPENGL} systems.
      */
     private void renderOpenGL(Runnable func) {
+        GLCalculate.updateProjectionMatrix(getWidth(), getHeight());
+        GL11.glViewport(0, 0, width, height);
         GL11.glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+
+        for(Renderer renderer : renderers) {
+            renderer.render(this);
+        }
 
         if (func != null) {
             func.run();
