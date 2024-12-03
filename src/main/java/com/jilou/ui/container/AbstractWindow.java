@@ -113,8 +113,8 @@ public abstract class AbstractWindow extends LWJGLWindow {
             });
 
             addFrameBufferSizeCallback((handle, width, height) -> {
-                setWidth(width);
-                setHeight(height);
+                this.width = width;
+                this.height = height;
             });
         }
     }

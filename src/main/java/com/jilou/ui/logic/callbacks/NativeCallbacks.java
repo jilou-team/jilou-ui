@@ -28,6 +28,10 @@ import org.lwjgl.glfw.GLFWWindowSizeCallbackI;
  */
 public final class NativeCallbacks {
 
+    private NativeCallbacks() {
+        throw new IllegalStateException("Utility class");
+    }
+
     /**
      * Handles window close events by invoking all registered {@link GLFWWindowCloseCallbackI} listeners.
      */
