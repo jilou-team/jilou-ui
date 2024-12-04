@@ -38,6 +38,8 @@ public abstract class AbstractWindow extends LWJGLWindow {
         super(localizedName);
         this.renderAtMinimized = false;
         this.useDefaultCallbacks = true;
+        this.setWidth(DEFAULT_WIDTH);
+        this.setHeight(DEFAULT_HEIGHT);
     }
 
     /**

@@ -39,8 +39,8 @@ public class WidgetBackgroundRenderer extends AbstractWidgetRenderer {
         this.testWidget = new Rectangle("Test");
         testWidget.setHeight(50.0);
         testWidget.setWidth(150.0);
-        testWidget.setPositionX(200.0);
-        testWidget.setPositionY(100.0);
+        testWidget.setPositionX(0.0);
+        testWidget.setPositionY(0.0);
     }
 
     /**

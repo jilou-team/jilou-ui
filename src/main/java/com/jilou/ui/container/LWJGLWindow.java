@@ -1027,10 +1027,10 @@ public abstract class LWJGLWindow {
      * Function update {@link Backend#OPENGL} systems.
      */
     private void renderOpenGL(Runnable func) {
-        GLCalculate.updateProjectionMatrix(getWidth(), getHeight());
+        GLCalculate.updateProjectionMatrix(width, height);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
         GL11.glViewport(0, 0, width, height);
         GL11.glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
         for(Renderer renderer : renderers) {
             renderer.render(this);
