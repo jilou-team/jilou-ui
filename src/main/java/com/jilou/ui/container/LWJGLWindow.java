@@ -24,7 +24,6 @@ import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 import org.lwjgl.glfw.GLFWScrollCallbackI;
 import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
-import org.lwjgl.glfw.GLFWWindowFocusCallback;
 import org.lwjgl.glfw.GLFWWindowFocusCallbackI;
 import org.lwjgl.glfw.GLFWWindowIconifyCallbackI;
 import org.lwjgl.glfw.GLFWWindowMaximizeCallbackI;
@@ -88,8 +87,8 @@ public abstract class LWJGLWindow {
     private WindowStates windowStates;
 
     private String title;
-    private int width;
-    private int height;
+    protected int width;
+    protected int height;
 
     private NativeSizeCallback sizeCallback;
     private NativePositionCallback positionCallback;
@@ -708,8 +707,9 @@ public abstract class LWJGLWindow {
      * Function returned the current {@link LWJGLWindow} list. This is deprecated because
      * we working on {@link ApplicationFactory} which is handle it later.
      * @return {@link List}<{@link LWJGLWindow}> - list of all windows.
+     * @deprecated
      */
-    @Deprecated
+    @Deprecated(since = "0.1.0", forRemoval = true)
     public List<LWJGLWindow> getNativeWindows() {
         return nativeWindows;
     }
@@ -1027,10 +1027,10 @@ public abstract class LWJGLWindow {
      * Function update {@link Backend#OPENGL} systems.
      */
     private void renderOpenGL(Runnable func) {
-        GLCalculate.updateProjectionMatrix(getWidth(), getHeight());
+        GLCalculate.updateProjectionMatrix(width, height);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
         GL11.glViewport(0, 0, width, height);
         GL11.glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
         for(Renderer renderer : renderers) {
             renderer.render(this);
