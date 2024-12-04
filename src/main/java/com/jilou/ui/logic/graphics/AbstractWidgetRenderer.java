@@ -2,8 +2,10 @@ package com.jilou.ui.logic.graphics;
 
 import com.jilou.ui.container.AbstractWindow;
 import com.jilou.ui.container.LWJGLWindow;
+import com.jilou.ui.container.Scene;
 import com.jilou.ui.logic.AbstractRenderer;
 import com.jilou.ui.logic.Renderer;
+import com.jilou.ui.widget.AbstractWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +46,7 @@ public abstract class AbstractWidgetRenderer extends AbstractRenderer {
      *
      * @param widgets a list of widgets to render
      */
-    public abstract void render(List<?> widgets);
+    public abstract void render(List<AbstractWidget> widgets);
 
     /**
      * Executes rendering logic for a given native window.
@@ -59,8 +61,11 @@ public abstract class AbstractWidgetRenderer extends AbstractRenderer {
      */
     @Override
     protected void func(LWJGLWindow nativeWindow) {
-        if (nativeWindow instanceof AbstractWindow) {
-            render(new ArrayList<>()); // Example placeholder logic
+        if (nativeWindow instanceof AbstractWindow window) {
+            Scene scene = window.getActiveScene();
+            if(scene != null) {
+                render(scene.getWidgetList());
+            }
         }
     }
 }

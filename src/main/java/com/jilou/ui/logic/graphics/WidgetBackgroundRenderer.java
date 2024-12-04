@@ -1,6 +1,7 @@
 package com.jilou.ui.logic.graphics;
 
 import com.jilou.ui.container.LWJGLWindow;
+import com.jilou.ui.widget.AbstractWidget;
 import com.jilou.ui.widget.shapes.Rectangle;
 import org.lwjgl.opengl.GL11;
 
@@ -25,8 +26,6 @@ import java.util.List;
  */
 public class WidgetBackgroundRenderer extends AbstractWidgetRenderer {
 
-    private final Rectangle testWidget;
-
     /**
      * Constructs a new {@code WidgetBackgroundRenderer}.
      * <p>
@@ -36,11 +35,6 @@ public class WidgetBackgroundRenderer extends AbstractWidgetRenderer {
      */
     public WidgetBackgroundRenderer() {
         super(null);
-        this.testWidget = new Rectangle("Test");
-        testWidget.setHeight(50.0);
-        testWidget.setWidth(150.0);
-        testWidget.setPositionX(0.0);
-        testWidget.setPositionY(0.0);
     }
 
     /**
@@ -54,16 +48,18 @@ public class WidgetBackgroundRenderer extends AbstractWidgetRenderer {
      * @param widgets the list of widgets to render
      */
     @Override
-    public void render(List<?> widgets) {
+    public void render(List<AbstractWidget> widgets) {
         /* render the given list */
-        GL11.glColor3f(0.2f, 5.0f, 0.0f);
+        for(AbstractWidget widget : widgets) {
+            GL11.glColor3f(0.2f, 5.0f, 0.0f);
 
-        GL11.glBegin(GL11.GL_QUADS);
-        GL11.glVertex2f((float) testWidget.getPositionX(), (float) testWidget.getPositionY());
-        GL11.glVertex2f((float) (testWidget.getPositionX() + testWidget.getWidth()), (float) testWidget.getPositionY());
-        GL11.glVertex2f((float) (testWidget.getPositionX() + testWidget.getWidth()), (float) (testWidget.getPositionY() + testWidget.getHeight()));
-        GL11.glVertex2f((float) testWidget.getPositionX(), (float) (testWidget.getPositionY() + testWidget.getHeight()));
-        GL11.glEnd();
+            GL11.glBegin(GL11.GL_QUADS);
+            GL11.glVertex2f((float) widget.getPositionX(), (float) widget.getPositionY());
+            GL11.glVertex2f((float) (widget.getPositionX() + widget.getWidth()), (float) widget.getPositionY());
+            GL11.glVertex2f((float) (widget.getPositionX() + widget.getWidth()), (float) (widget.getPositionY() + widget.getHeight()));
+            GL11.glVertex2f((float) widget.getPositionX(), (float) (widget.getPositionY() + widget.getHeight()));
+            GL11.glEnd();
+        }
     }
 
     /**
