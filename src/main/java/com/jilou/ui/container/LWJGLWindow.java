@@ -11,6 +11,7 @@ import com.jilou.ui.logic.graphics.WidgetBackgroundRenderer;
 import com.jilou.ui.logic.graphics.tools.GLCalculate;
 import com.jilou.ui.logic.input.KeyBoard;
 import com.jilou.ui.logic.input.Mouse;
+import com.jilou.ui.utils.Color;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.Callbacks;
@@ -90,6 +91,8 @@ public abstract class LWJGLWindow {
     protected int width;
     protected int height;
 
+    protected Color windowBackgroundColor;
+
     private NativeSizeCallback sizeCallback;
     private NativePositionCallback positionCallback;
     private NativeFrameBufferSizeCallback frameBufferSizeCallback;
@@ -123,6 +126,7 @@ public abstract class LWJGLWindow {
         this.height = DEFAULT_HEIGHT;
         this.backend = DEFAULT_BACKEND;
         this.windowStates = WindowStates.DECLARING;
+        this.windowBackgroundColor = Color.hexadecimal("#171724");
     }
 
     /**
@@ -516,6 +520,56 @@ public abstract class LWJGLWindow {
      */
     public List<Renderer> getRenderers() {
         return renderers;
+    }
+
+    /* ############################################################################################
+     *
+     *                                         Backgrounds
+     *
+     * ############################################################################################ */
+
+    /**
+     * Sets the background color using RGB values.
+     *
+     * @param red The red component of the color (0 to 255).
+     * @param green The green component of the color (0 to 255).
+     * @param blue The blue component of the color (0 to 255).
+     *
+     * @see Color#set(int, int, int, int) for setting the color using RGB components.
+     */
+    public void setBackgroundColor(int red, int green, int blue) {
+        windowBackgroundColor.set(red, green, blue, 255);
+    }
+
+    /**
+     * Sets the background color using a hexadecimal string.
+     * The string should be in the format "#RRGGBB", where RR, GG, and BB are
+     * the red, green, and blue components in hexadecimal notation.
+     *
+     * @param hexadecimal The hexadecimal string representing the color (e.g., "#FF5733").
+     *
+     * @see Color#setHexadecimal(String) for setting the color using hexadecimal notation.
+     */
+    public void setBackgroundColor(String hexadecimal) {
+        windowBackgroundColor.setHexadecimal(hexadecimal);
+    }
+
+    /**
+     * Sets the background color using a `Color` object.
+     *
+     * @param color The `Color` object to set as the background color.
+     */
+    public void setBackgroundColor(Color color) {
+        windowBackgroundColor = color;
+    }
+
+    /**
+     * Retrieves the current background color of the window.
+     *
+     * @return The current background color as a `Color` object.
+     */
+    public Color getBackgroundColor() {
+        return windowBackgroundColor;
     }
 
     /* ############################################################################################
@@ -1030,7 +1084,8 @@ public abstract class LWJGLWindow {
         GLCalculate.updateProjectionMatrix(width, height);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
         GL11.glViewport(0, 0, width, height);
-        GL11.glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
+        GL11.glClearColor(windowBackgroundColor.getRedPercent(), windowBackgroundColor.getGreenPercent(),
+                windowBackgroundColor.getBluePercent(), windowBackgroundColor.getAlphaPercent());
 
         for(Renderer renderer : renderers) {
             renderer.render(this);
