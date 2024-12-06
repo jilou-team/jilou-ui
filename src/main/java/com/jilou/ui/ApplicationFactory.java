@@ -1,8 +1,10 @@
 package com.jilou.ui;
 
+import com.jilou.ui.container.Scene;
 import com.jilou.ui.logic.Renderer;
 
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Factory class for generating application-specific utilities and resources.
@@ -17,6 +19,11 @@ import java.util.concurrent.ThreadLocalRandom;
 public final class ApplicationFactory {
 
     /**
+     * Get a {@link AtomicInteger} for generate next id entry for {@link Scene} objects.
+     */
+    private static final AtomicInteger sceneID = new AtomicInteger();
+
+    /**
      * Generates the next unique identifier for a {@link Renderer}.
      * <p>
      * This method returns a random {@link Long} value between 1,000,000,000 and 9,999,999,999,
@@ -28,6 +35,18 @@ public final class ApplicationFactory {
      */
     public static Long giveNextRenderID() {
         return ThreadLocalRandom.current().nextLong(1_000_000_000L, 9_999_999_999L);
+    }
+
+    /**
+     * Generates the next unique identifier for a {@link Scene}.
+     * <p>
+     * This method returns a stable number value. The value indicates all entries for {@link Scene}'s.
+     * The id is used for sort the {@link Scene}.
+     * </p>
+     * @return a {@link Integer} - value which represent the ID
+     */
+    public static Integer giveNextSceneID() {
+        return sceneID.getAndIncrement();
     }
 
 }
