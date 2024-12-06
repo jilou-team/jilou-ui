@@ -1,5 +1,6 @@
 package com.jilou.ui.container.layout;
 
+import com.jilou.ui.container.Scene;
 import com.jilou.ui.widget.AbstractWidget;
 
 import java.util.ArrayList;
@@ -23,10 +24,34 @@ public abstract class Layout {
     private final List<AbstractWidget> widgetList;
 
     /**
+     * The layout width count.
+     */
+    private int width;
+
+    /**
+     * The layout height count.
+     */
+    private int height;
+
+    /**
+     * Bind the current layout size to fit the {@link Scene} size.
+     */
+    private boolean bindSizeToScene;
+
+    /**
+     * Parent must be a {@link Scene}.
+     */
+    private Scene parent;
+
+    /**
      * Constructs a new {@code Layout} instance with an empty widget list.
      */
     protected Layout() {
         widgetList = new ArrayList<>();
+        this.parent = null;
+        this.bindSizeToScene = true;
+        this.setWidth(0);
+        this.setHeight(0);
     }
 
     /**
@@ -53,6 +78,50 @@ public abstract class Layout {
         }
 
         widgetList.clear();
+    }
+
+    public void setWidth(int width) {
+        if(bindSizeToScene && hasParent()) {
+            width = parent.getWidth();
+        }
+        this.width = width;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setHeight(int height) {
+        if(bindSizeToScene && hasParent()) {
+            height = parent.getHeight();
+        }
+        this.height = height;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public boolean isBindSizeToScene() {
+        return bindSizeToScene;
+    }
+
+    public void setBindSizeToScene(boolean state) {
+        this.bindSizeToScene = state;
+    }
+
+    public void setParent(Scene parent) {
+        this.parent = parent;
+        this.setWidth(getWidth());
+        this.setHeight(getHeight());
+    }
+
+    public Scene getParent() {
+        return parent;
+    }
+
+    public boolean hasParent() {
+        return parent != null;
     }
 
     /**

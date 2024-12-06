@@ -20,17 +20,17 @@ import java.util.List;
 public class Scene {
 
     /**
-     * The unique identifier for the scene.
+     * The unique identifier for the {@code Scene}.
      */
     private final int id;
 
     /**
-     * The localized name of the scene, derived from its class name and ID.
+     * The localized name of the {@code Scene}, derived from its class name and ID.
      */
     private final String localizedName;
 
     /**
-     * The list of widgets contained in the scene.
+     * The list of {@link AbstractWidget} contained in the scene.
      */
     private List<AbstractWidget> widgetList;
 
@@ -40,9 +40,19 @@ public class Scene {
     private AbstractWindow container;
 
     /**
-     * The root layout of the scene.
+     * The root {@link Layout} of the scene.
      */
     private Layout root;
+
+    /**
+     * The {@code Scene} width.
+     */
+    private int width;
+
+    /**
+     * The {@code Scene} height.
+     */
+    private int height;
 
     /**
      * Constructs a scene with no root layout and no container.
@@ -74,7 +84,7 @@ public class Scene {
         } else {
             this.widgetList = root.getWidgetList();
         }
-        this.container = container;
+        this.setContainer(container);
         this.setRoot(root);
     }
 
@@ -101,6 +111,7 @@ public class Scene {
         }
         this.root = root;
         if (root != null) {
+            root.setParent(this);
             this.widgetList = root.getWidgetList();
         }
     }
@@ -186,6 +197,13 @@ public class Scene {
      */
     protected void setContainer(AbstractWindow container) {
         this.container = container;
+        if(container != null) {
+            this.setWidth(container.getWidth());
+            this.setHeight(container.getHeight());
+        } else {
+            this.setWidth(800);
+            this.setHeight(600);
+        }
     }
 
     /**
@@ -213,6 +231,28 @@ public class Scene {
      */
     public List<AbstractWidget> getWidgetList() {
         return widgetList;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+        if(root != null) {
+            root.setWidth(root.getWidth());
+        }
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+        if(root != null) {
+            root.setHeight(root.getHeight());
+        }
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     /**

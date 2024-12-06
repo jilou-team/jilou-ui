@@ -6,6 +6,8 @@ import com.jilou.ui.container.Window;
 import com.jilou.ui.enums.Backend;
 import com.jilou.ui.widget.shapes.Rectangle;
 
+import java.util.concurrent.TimeUnit;
+
 public class ExampleWindowTest {
 
     public static void main(String[] args) throws InterruptedException {

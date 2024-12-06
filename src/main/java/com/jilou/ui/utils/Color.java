@@ -9,6 +9,7 @@ import java.util.Random;
  * The Color class provides utilities to manage and manipulate colors in various formats such as RGB, HSB, hexadecimal, and more.
  * It includes methods for converting between color models and blending or modifying colors.
  */
+@SuppressWarnings("unused")
 public class Color {
 
     private static final Logger logger = LogManager.getLogger(Color.class);

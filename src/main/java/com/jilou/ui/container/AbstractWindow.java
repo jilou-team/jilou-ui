@@ -95,6 +95,22 @@ public abstract class AbstractWindow extends LWJGLWindow {
         }
     }
 
+    @Override
+    public void setWidth(int width) {
+        super.setWidth(width);
+        if(activeScene != null) {
+            activeScene.setWidth(width);
+        }
+    }
+
+    @Override
+    public void setHeight(int height) {
+        super.setHeight(height);
+        if(activeScene != null) {
+            activeScene.setHeight(height);
+        }
+    }
+
     /**
      * Sets whether the window should continue rendering while minimized.
      *
@@ -328,6 +344,10 @@ public abstract class AbstractWindow extends LWJGLWindow {
             addFrameBufferSizeCallback((handle, width, height) -> {
                 this.width = width;
                 this.height = height;
+                if(activeScene != null) {
+                    activeScene.setWidth(width);
+                    activeScene.setHeight(height);
+                }
             });
         }
     }
