@@ -95,18 +95,34 @@ public abstract class AbstractWindow extends LWJGLWindow {
         }
     }
 
+    /**
+     * Sets the width of the graphical object.
+     * If {@code bindSizeToScene} is {@code true} and the object has a parent,
+     * the width is set to the width of the parent scene instead.
+     * Additionally, if an active scene is set, its width is updated.
+     *
+     * @param width the desired width of the graphical object.
+     */
     @Override
     public void setWidth(int width) {
         super.setWidth(width);
-        if(activeScene != null) {
+        if (activeScene != null) {
             activeScene.setWidth(width);
         }
     }
 
+    /**
+     * Sets the height of the graphical object.
+     * If {@code bindSizeToScene} is {@code true} and the object has a parent,
+     * the height is set to the height of the parent scene instead.
+     * Additionally, if an active scene is set, its height is updated.
+     *
+     * @param height the desired height of the graphical object.
+     */
     @Override
     public void setHeight(int height) {
         super.setHeight(height);
-        if(activeScene != null) {
+        if (activeScene != null) {
             activeScene.setHeight(height);
         }
     }

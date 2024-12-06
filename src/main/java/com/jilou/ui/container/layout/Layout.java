@@ -80,46 +80,96 @@ public abstract class Layout {
         widgetList.clear();
     }
 
+    /**
+     * Sets the width of the graphical object.
+     * If {@code bindSizeToScene} is {@code true} and the object has a parent,
+     * the width is set to the width of the parent scene instead.
+     *
+     * @param width the desired width of the graphical object.
+     */
     public void setWidth(int width) {
-        if(bindSizeToScene && hasParent()) {
+        if (bindSizeToScene && hasParent()) {
             width = parent.getWidth();
         }
         this.width = width;
     }
 
+    /**
+     * Returns the width of the graphical object.
+     *
+     * @return the width of the graphical object.
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * Sets the height of the graphical object.
+     * If {@code bindSizeToScene} is {@code true} and the object has a parent,
+     * the height is set to the height of the parent scene instead.
+     *
+     * @param height the desired height of the graphical object.
+     */
     public void setHeight(int height) {
-        if(bindSizeToScene && hasParent()) {
+        if (bindSizeToScene && hasParent()) {
             height = parent.getHeight();
         }
         this.height = height;
     }
 
+    /**
+     * Returns the height of the graphical object.
+     *
+     * @return the height of the graphical object.
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Returns whether the size of the graphical object is bound to its parent scene.
+     *
+     * @return {@code true} if the size is bound to the parent scene, {@code false} otherwise.
+     */
     public boolean isBindSizeToScene() {
         return bindSizeToScene;
     }
 
+    /**
+     * Sets whether the size of the graphical object should be bound to its parent scene.
+     *
+     * @param state {@code true} to bind the size to the parent scene, {@code false} otherwise.
+     */
     public void setBindSizeToScene(boolean state) {
         this.bindSizeToScene = state;
     }
 
+    /**
+     * Sets the parent scene of the graphical object.
+     * When a parent is set, the width and height are updated based on the current settings.
+     *
+     * @param parent the parent scene to set.
+     */
     public void setParent(Scene parent) {
         this.parent = parent;
         this.setWidth(getWidth());
         this.setHeight(getHeight());
     }
 
+    /**
+     * Returns the parent scene of the graphical object.
+     *
+     * @return the parent scene, or {@code null} if no parent is set.
+     */
     public Scene getParent() {
         return parent;
     }
 
+    /**
+     * Checks whether the graphical object has a parent scene.
+     *
+     * @return {@code true} if the object has a parent scene, {@code false} otherwise.
+     */
     public boolean hasParent() {
         return parent != null;
     }

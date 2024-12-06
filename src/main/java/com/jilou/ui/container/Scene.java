@@ -233,24 +233,50 @@ public class Scene {
         return widgetList;
     }
 
+    /**
+     * Sets the width of the component.
+     * <p>
+     * If a root is present, its width is also updated to match its current width.
+     * </p>
+     *
+     * @param width the new width to set
+     */
     public void setWidth(int width) {
         this.width = width;
-        if(root != null) {
+        if (root != null) {
             root.setWidth(root.getWidth());
         }
     }
 
+    /**
+     * Retrieves the current width of the component.
+     *
+     * @return the current width
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * Sets the height of the component.
+     * <p>
+     * If a root is present, its height is also updated to match its current height.
+     * </p>
+     *
+     * @param height the new height to set
+     */
     public void setHeight(int height) {
         this.height = height;
-        if(root != null) {
+        if (root != null) {
             root.setHeight(root.getHeight());
         }
     }
 
+    /**
+     * Retrieves the current height of the component.
+     *
+     * @return the current height
+     */
     public int getHeight() {
         return height;
     }
