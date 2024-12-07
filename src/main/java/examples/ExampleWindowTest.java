@@ -4,6 +4,7 @@ import com.jilou.ui.JilouUI;
 import com.jilou.ui.container.Scene;
 import com.jilou.ui.container.Window;
 import com.jilou.ui.enums.Backend;
+import com.jilou.ui.styles.types.Radius;
 import com.jilou.ui.widget.shapes.Rectangle;
 
 public class ExampleWindowTest {
@@ -19,10 +20,12 @@ public class ExampleWindowTest {
 
         Scene scene = window.getActiveScene();
         Rectangle rectangle = new Rectangle("Test");
-        rectangle.setHeight(350.0);
-        rectangle.setWidth(400.0);
+        rectangle.setHeight(50);
+        rectangle.setWidth(200);
         rectangle.setPositionX(100.0);
         rectangle.setPositionY(100.0);
+
+        rectangle.getStyle().setBorderRadius(new Radius(10));
 
         scene.add(rectangle);
     }

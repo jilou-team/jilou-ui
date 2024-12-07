@@ -2,6 +2,7 @@ package com.jilou.ui.logic.graphics;
 
 import com.jilou.ui.container.LWJGLWindow;
 import com.jilou.ui.logic.graphics.mapper.BackgroundNativeMapper;
+import com.jilou.ui.logic.graphics.mapper.BorderNativeMapper;
 import com.jilou.ui.widget.AbstractWidget;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import java.util.List;
 public class WidgetBackgroundRenderer extends AbstractWidgetRenderer {
 
     private BackgroundNativeMapper backgroundMapper;
+    private BorderNativeMapper borderMapper;
 
     /**
      * Constructs a new {@code WidgetBackgroundRenderer}.
@@ -51,6 +53,7 @@ public class WidgetBackgroundRenderer extends AbstractWidgetRenderer {
     public void render(List<AbstractWidget> widgets) {
         for(AbstractWidget widget : widgets) {
             backgroundMapper.renderBackground(widget);
+            borderMapper.renderBorder(widget);
         }
     }
 
@@ -67,6 +70,7 @@ public class WidgetBackgroundRenderer extends AbstractWidgetRenderer {
     @Override
     public void preLoad(LWJGLWindow nativeWindow) {
         this.backgroundMapper = new BackgroundNativeMapper();
+        this.borderMapper = new BorderNativeMapper();
     }
 
     /**

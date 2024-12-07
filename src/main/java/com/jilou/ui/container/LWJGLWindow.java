@@ -8,6 +8,7 @@ import com.jilou.ui.logic.AbstractRenderer;
 import com.jilou.ui.logic.Renderer;
 import com.jilou.ui.logic.callbacks.NativeCallbacks.*;
 import com.jilou.ui.logic.graphics.WidgetBackgroundRenderer;
+import com.jilou.ui.logic.graphics.WidgetBorderRenderer;
 import com.jilou.ui.logic.graphics.tools.GLCalculate;
 import com.jilou.ui.logic.input.KeyBoard;
 import com.jilou.ui.logic.input.Mouse;
@@ -996,6 +997,7 @@ public abstract class LWJGLWindow {
      */
     private void registerDefaultRenderers() {
         addRenderer(new WidgetBackgroundRenderer());
+        addRenderer(new WidgetBorderRenderer());
     }
 
     /* ############################################################################################
@@ -1033,6 +1035,9 @@ public abstract class LWJGLWindow {
 
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
 
         this.context = new Context(windowHandle, capabilities);
     }
