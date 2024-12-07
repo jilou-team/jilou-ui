@@ -1,5 +1,9 @@
 package com.jilou.ui.widget;
 
+import com.jilou.ui.styles.StyleSheet;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +17,7 @@ import java.util.List;
  * @since 0.1.0
  * @author Daniel Ramke
  */
+@Getter
 public abstract class AbstractWidget {
 
     /**
@@ -43,12 +48,16 @@ public abstract class AbstractWidget {
     /**
      * The X-coordinate position of the widget.
      */
+    @Setter
     private double positionX;
 
     /**
      * The Y-coordinate position of the widget.
      */
+    @Setter
     private double positionY;
+
+    private StyleSheet style;
 
     /**
      * Constructs a new {@code AbstractWidget} with the specified localized name.
@@ -62,6 +71,7 @@ public abstract class AbstractWidget {
         this.height = 0;
         this.positionX = 0;
         this.positionY = 0;
+        this.setStyle(null);
     }
 
     /**
@@ -84,15 +94,6 @@ public abstract class AbstractWidget {
     }
 
     /**
-     * Retrieves the localized name of the widget.
-     *
-     * @return the localized name
-     */
-    public String getLocalizedName() {
-        return localizedName;
-    }
-
-    /**
      * Sets the display name of the widget. If the provided name is null or blank,
      * the widget's class name is used as the default.
      *
@@ -106,30 +107,12 @@ public abstract class AbstractWidget {
     }
 
     /**
-     * Retrieves the display name of the widget.
-     *
-     * @return the display name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
      * Sets the width of the widget. The width cannot be negative.
      *
      * @param width the new width of the widget in pixels
      */
     public void setWidth(double width) {
         this.width = Math.max(0, width);
-    }
-
-    /**
-     * Retrieves the width of the widget.
-     *
-     * @return the width in pixels
-     */
-    public double getWidth() {
-        return width;
     }
 
     /**
@@ -142,48 +125,14 @@ public abstract class AbstractWidget {
     }
 
     /**
-     * Retrieves the height of the widget.
      *
-     * @return the height in pixels
+     * @param style
      */
-    public double getHeight() {
-        return height;
-    }
-
-    /**
-     * Sets the X-coordinate position of the widget.
-     *
-     * @param positionX the new X-coordinate
-     */
-    public void setPositionX(double positionX) {
-        this.positionX = positionX;
-    }
-
-    /**
-     * Retrieves the X-coordinate position of the widget.
-     *
-     * @return the X-coordinate
-     */
-    public double getPositionX() {
-        return positionX;
-    }
-
-    /**
-     * Sets the Y-coordinate position of the widget.
-     *
-     * @param positionY the new Y-coordinate
-     */
-    public void setPositionY(double positionY) {
-        this.positionY = positionY;
-    }
-
-    /**
-     * Retrieves the Y-coordinate position of the widget.
-     *
-     * @return the Y-coordinate
-     */
-    public double getPositionY() {
-        return positionY;
+    public void setStyle(StyleSheet style) {
+        if(style == null) {
+            style = StyleSheet.builder().build();
+        }
+        this.style = style;
     }
 
     /**
@@ -204,13 +153,5 @@ public abstract class AbstractWidget {
         children.remove(child);
     }
 
-    /**
-     * Retrieves the list of child widgets associated with this widget.
-     *
-     * @return the list of child widgets
-     */
-    public List<AbstractWidget> getChildren() {
-        return children;
-    }
 }
 

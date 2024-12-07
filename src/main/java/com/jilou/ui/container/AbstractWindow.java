@@ -317,7 +317,6 @@ public abstract class AbstractWindow extends LWJGLWindow {
     public void nextScene() {
         int currentIndexID = activeScene.getId();
         int futureID = currentIndexID + 1;
-        System.out.println("Next: " + currentIndexID + ", " + futureID);
         if (hasScene(futureID)) {
             setActiveScene(getScene(futureID));
         } else {
@@ -331,7 +330,6 @@ public abstract class AbstractWindow extends LWJGLWindow {
     public void previousScene() {
         int currentIndexID = activeScene.getId();
         int futureID = currentIndexID - 1;
-        System.out.println("Previous: " + currentIndexID + ", " + futureID);
         if (hasScene(futureID)) {
             setActiveScene(getScene(futureID));
         } else {

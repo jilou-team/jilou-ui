@@ -126,7 +126,7 @@ public abstract class LWJGLWindow {
         this.height = DEFAULT_HEIGHT;
         this.backend = DEFAULT_BACKEND;
         this.windowStates = WindowStates.DECLARING;
-        this.windowBackgroundColor = Color.hexadecimal("#171724");
+        this.windowBackgroundColor = Color.hexadecimal("#fefefe");
     }
 
     /**
