@@ -50,9 +50,7 @@ public class WidgetBackgroundRenderer extends AbstractWidgetRenderer {
     @Override
     public void render(List<AbstractWidget> widgets) {
         for(AbstractWidget widget : widgets) {
-            backgroundMapper.renderBackground((float) widget.getPositionX(), (float) widget.getPositionY(),
-                    (float) widget.getWidth(), (float) widget.getHeight(),
-                    widget.getStyle().getBackground(), widget.getStyle().getDropShadow(), widget.getStyle().getBorderRadius());
+            backgroundMapper.renderBackground(widget);
         }
     }
 

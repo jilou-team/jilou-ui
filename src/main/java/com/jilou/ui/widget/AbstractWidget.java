@@ -1,5 +1,6 @@
 package com.jilou.ui.widget;
 
+import com.jilou.ui.logic.graphics.WidgetBackgroundRenderer;
 import com.jilou.ui.styles.StyleSheet;
 import lombok.Getter;
 import lombok.Setter;
@@ -57,6 +58,9 @@ public abstract class AbstractWidget {
     @Setter
     private double positionY;
 
+    /**
+     * The {@link StyleSheet} of the widget.
+     */
     private StyleSheet style;
 
     /**
@@ -125,8 +129,8 @@ public abstract class AbstractWidget {
     }
 
     /**
-     *
-     * @param style
+     * Set the current {@link StyleSheet} for this widget. It has impact to the {@link WidgetBackgroundRenderer}.
+     * @param style new style can be null but is replaced than by {@code StyleSheet.builder().build()}
      */
     public void setStyle(StyleSheet style) {
         if(style == null) {

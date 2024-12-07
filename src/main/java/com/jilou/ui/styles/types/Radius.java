@@ -4,26 +4,26 @@ import com.jilou.ui.math.Maths;
 import lombok.Getter;
 
 @Getter
-public class BorderRadius {
+public class Radius {
 
     private double topLeft;
     private double topRight;
     private double bottomRight;
     private double bottomLeft;
 
-    public BorderRadius() {
+    public Radius() {
         this(0.0);
     }
 
-    public BorderRadius(double radius) {
+    public Radius(double radius) {
         this(radius, radius);
     }
 
-    public BorderRadius(double top, double bottom) {
+    public Radius(double top, double bottom) {
         this(top, top, bottom, bottom);
     }
 
-    public BorderRadius(double topLeft, double topRight, double bottomLeft, double bottomRight) {
+    public Radius(double topLeft, double topRight, double bottomLeft, double bottomRight) {
         this.set(topLeft, topRight, bottomLeft, bottomRight);
     }
 
