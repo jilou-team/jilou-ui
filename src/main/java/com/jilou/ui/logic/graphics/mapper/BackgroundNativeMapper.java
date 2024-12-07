@@ -128,6 +128,7 @@ public class BackgroundNativeMapper {
      * @param sheet    The style sheet containing the border radius and corner segmentation.
      * @param radius   The radius of the rectangle's corners.
      */
+    @SuppressWarnings("java:S1192")
     private void drawRoundedRectangle(float x, float y, float width, float height, StyleSheet sheet, Radius radius) {
         int segments = sheet.getCornerSegmentation(); // Number of segments for smooth corners
         float theta = (float) (2 * Math.PI / segments);
@@ -139,29 +140,6 @@ public class BackgroundNativeMapper {
         float topRight = (float) radius.getTopRight();
         float bottomLeft = (float) radius.getBottomLeft();
         float bottomRight = (float) radius.getBottomRight();
-
-        // Draw the rectangle body (excluding corners)
-        GL11.glBegin(GL11.GL_QUADS);
-
-        // Center
-        GL11.glVertex2f(x + topLeft, y);
-        GL11.glVertex2f(x + width - topRight, y);
-        GL11.glVertex2f(x + width - bottomRight, y + height);
-        GL11.glVertex2f(x + bottomLeft, y + height);
-
-        // Left
-        GL11.glVertex2f(x, y + topLeft);
-        GL11.glVertex2f(x + topLeft, y + topLeft);
-        GL11.glVertex2f(x + topLeft, y + height - bottomLeft);
-        GL11.glVertex2f(x, y + height - bottomLeft);
-
-        // Right
-        GL11.glVertex2f(x + width - topRight, y + topRight);
-        GL11.glVertex2f(x + width, y + topRight);
-        GL11.glVertex2f(x + width, y + height - bottomRight);
-        GL11.glVertex2f(x + width - bottomRight, y + height - bottomRight);
-
-        GL11.glEnd();
 
         // Bottom-left corner
         if (bottomLeft > 0) {
@@ -182,6 +160,29 @@ public class BackgroundNativeMapper {
         if (topLeft > 0) {
             drawCorner(x + topLeft, y + height - topLeft, cos, sin, segments, topLeft, true, false);
         }
+
+        // Draw the rectangle body (excluding corners)
+        GL11.glBegin(GL11.GL_QUADS);
+
+        // Center
+        GL11.glVertex2f(x + bottomLeft, y);
+        GL11.glVertex2f(x + width - bottomRight, y);
+        GL11.glVertex2f(x + width - topRight, y + height);
+        GL11.glVertex2f(x + topLeft, y + height);
+
+        // Left
+        GL11.glVertex2f(x, y + bottomLeft);
+        GL11.glVertex2f(x + bottomLeft, y + bottomLeft);
+        GL11.glVertex2f(x + topLeft, y + height - topLeft);
+        GL11.glVertex2f(x, y + height - topLeft);
+
+        // Right
+        GL11.glVertex2f(x + width - bottomRight, y + bottomRight);
+        GL11.glVertex2f(x + width, y + bottomRight);
+        GL11.glVertex2f(x + width, y + height - topRight);
+        GL11.glVertex2f(x + width - topRight, y + height - topRight);
+
+        GL11.glEnd();
     }
 
     /**
