@@ -12,6 +12,7 @@ import com.jilou.ui.logic.graphics.tools.GLCalculate;
 import com.jilou.ui.logic.input.KeyBoard;
 import com.jilou.ui.logic.input.Mouse;
 import com.jilou.ui.utils.Color;
+import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.Callbacks;
@@ -73,22 +74,66 @@ public abstract class LWJGLWindow {
     public static final int DEFAULT_WIDTH = 800;
     public static final int DEFAULT_HEIGHT = 600;
 
+    /**
+     * {@link List}<{@link Renderer}> - all {@link Renderer}'s which used by this window.
+     */
+    @Getter
     private final List<Renderer> renderers = new ArrayList<>();
 
     private final List<LWJGLWindow> nativeWindows = new ArrayList<>();
 
+    /**
+     * {@link Thread}- active window thread.
+     */
+    @Getter
     private Thread windowThread;
 
+    /**
+     * {@link Long}- current generated native handle.
+     */
+    @Getter
     private long windowHandle;
+
+    /**
+     * {@link String}- named identifier.
+     */
+    @Getter
     private final String localizedName;
 
+    /**
+     * {@link Context}- current window context.
+     */
+    @Getter
     private Context context;
 
+    /**
+     * {@link Backend}- by default {@link Backend#OPENGL}.
+     */
+    @Getter
     private Backend backend;
+
+    /**
+     * {@link WindowStates}- current window state.
+     */
+    @Getter
     private WindowStates windowStates;
 
+    /**
+     * {@link String}- current title.
+     */
+    @Getter
     private String title;
+
+    /**
+     * {@link Integer}- current window width.
+     */
+    @Getter
     protected int width;
+
+    /**
+     * {@link Integer}- current window height.
+     */
+    @Getter
     protected int height;
 
     protected Color windowBackgroundColor;
@@ -126,7 +171,7 @@ public abstract class LWJGLWindow {
         this.height = DEFAULT_HEIGHT;
         this.backend = DEFAULT_BACKEND;
         this.windowStates = WindowStates.DECLARING;
-        this.windowBackgroundColor = Color.hexadecimal("#171724");
+        this.windowBackgroundColor = Color.hexadecimal("#fefefe");
     }
 
     /**
@@ -514,14 +559,6 @@ public abstract class LWJGLWindow {
         return found;
     }
 
-    /**
-     * Function returned all {@link Renderer}'s which current used by {@link LWJGLWindow}.
-     * @return {@link List}<{@link Renderer}> - all {@link Renderer}'s which used by this window.
-     */
-    public List<Renderer> getRenderers() {
-        return renderers;
-    }
-
     /* ############################################################################################
      *
      *                                         Backgrounds
@@ -699,65 +736,6 @@ public abstract class LWJGLWindow {
     }
 
     /**
-     * Function gets the current {@link LWJGLWindow} width in the virtual desktop.
-     * @return {@link Integer}- current window width.
-     */
-    public int getWidth() {
-        return width;
-    }
-
-    /**
-     * Function gets the current {@link LWJGLWindow} height in the virtual desktop.
-     * @return {@link Integer}- current window height.
-     */
-    public int getHeight() {
-        return height;
-    }
-
-    /**
-     * Function returns the current window title.
-     * This was set by {@link #setTitle(String)}.
-     * @return {@link String}- current title.
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * Function returns the current running {@link LWJGLWindow} Thread.
-     * The thread can be start with {@link #start()}.
-     * @return {@link Thread}- active window thread.
-     */
-    public Thread getWindowThread() {
-        return windowThread;
-    }
-
-    /**
-     * Function returns the current {@link LWJGLWindow} state given by {@link WindowStates}.
-     * @return {@link WindowStates}- current window state.
-     */
-    public WindowStates getWindowStates() {
-        return windowStates;
-    }
-
-    /**
-     * Function returns the used {@link Backend} of the {@link LWJGLWindow}.
-     * @return {@link Backend}- by default {@link Backend#OPENGL}.
-     */
-    public Backend getBackend() {
-        return backend;
-    }
-
-    /**
-     * Function returned the {@link Context} of the created {@link LWJGLWindow}.
-     * Context stored the current {@link #getWindowHandle()}.
-     * @return {@link Context}- current window context.
-     */
-    public Context getContext() {
-        return context;
-    }
-
-    /**
      * Function returned the current {@link LWJGLWindow} list. This is deprecated because
      * we working on {@link ApplicationFactory} which is handle it later.
      * @return {@link List}<{@link LWJGLWindow}> - list of all windows.
@@ -766,24 +744,6 @@ public abstract class LWJGLWindow {
     @Deprecated(since = "0.1.0", forRemoval = true)
     public List<LWJGLWindow> getNativeWindows() {
         return nativeWindows;
-    }
-
-    /**
-     * Function returns the generated handle which is native from {@link GLFW#glfwCreateWindow(int, int, ByteBuffer, long, long)}.
-     * Note: use {@link #getContext()} instand of this!
-     * @return {@link Long}- current generated native handle.
-     */
-    public long getWindowHandle() {
-        return windowHandle;
-    }
-
-    /**
-     * Function returns the generated secure name of this {@link LWJGLWindow}. This is
-     * better to use as {@link #getWindowHandle()} because it is human-readable.
-     * @return {@link String}- named identifier.
-     */
-    public String getLocalizedName() {
-        return localizedName;
     }
 
     /* ############################################################################################

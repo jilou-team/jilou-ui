@@ -1,10 +1,8 @@
 package com.jilou.ui.logic.graphics;
 
 import com.jilou.ui.container.LWJGLWindow;
+import com.jilou.ui.logic.graphics.mapper.BackgroundNativeMapper;
 import com.jilou.ui.widget.AbstractWidget;
-import com.jilou.ui.widget.shapes.Rectangle;
-import org.lwjgl.opengl.GL11;
-
 import java.util.List;
 
 /**
@@ -25,6 +23,8 @@ import java.util.List;
  * @author Daniel Ramke
  */
 public class WidgetBackgroundRenderer extends AbstractWidgetRenderer {
+
+    private BackgroundNativeMapper backgroundMapper;
 
     /**
      * Constructs a new {@code WidgetBackgroundRenderer}.
@@ -49,16 +49,8 @@ public class WidgetBackgroundRenderer extends AbstractWidgetRenderer {
      */
     @Override
     public void render(List<AbstractWidget> widgets) {
-        /* render the given list */
         for(AbstractWidget widget : widgets) {
-            GL11.glColor3f(0.2f, 5.0f, 0.0f);
-
-            GL11.glBegin(GL11.GL_QUADS);
-            GL11.glVertex2f((float) widget.getPositionX(), (float) widget.getPositionY());
-            GL11.glVertex2f((float) (widget.getPositionX() + widget.getWidth()), (float) widget.getPositionY());
-            GL11.glVertex2f((float) (widget.getPositionX() + widget.getWidth()), (float) (widget.getPositionY() + widget.getHeight()));
-            GL11.glVertex2f((float) widget.getPositionX(), (float) (widget.getPositionY() + widget.getHeight()));
-            GL11.glEnd();
+            backgroundMapper.renderBackground(widget);
         }
     }
 
@@ -74,7 +66,7 @@ public class WidgetBackgroundRenderer extends AbstractWidgetRenderer {
      */
     @Override
     public void preLoad(LWJGLWindow nativeWindow) {
-        /* preload GL/Vulkan resources */
+        this.backgroundMapper = new BackgroundNativeMapper();
     }
 
     /**
