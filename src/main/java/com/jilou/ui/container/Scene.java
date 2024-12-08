@@ -95,6 +95,12 @@ public class Scene {
         if (root != null) {
             root.update();
         }
+
+        if(widgetList != null) {
+            for (AbstractWidget widget : widgetList) {
+                widget.update();
+            }
+        }
     }
 
     /**

@@ -5,6 +5,7 @@ import com.jilou.ui.styles.types.Border;
 import com.jilou.ui.styles.types.Radius;
 import com.jilou.ui.styles.types.DropShadow;
 import com.jilou.ui.utils.Color;
+import com.jilou.ui.utils.format.Alignment;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -57,6 +58,13 @@ public class StyleSheet {
      */
     @Builder.Default
     private Radius borderRadius = new Radius(0);
+
+    /**
+     * The alignment content or justify content from css value.
+     * Default it is {@link Alignment#NOTHING} which means set the child anywhere in the parent container.
+     */
+    @Builder.Default
+    private Alignment alignment = Alignment.NOTHING;
 
     /**
      * The number of segments used to render the corners. This controls the smoothness of the rounded corners.

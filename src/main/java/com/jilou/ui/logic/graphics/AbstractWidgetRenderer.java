@@ -4,10 +4,11 @@ import com.jilou.ui.container.AbstractWindow;
 import com.jilou.ui.container.LWJGLWindow;
 import com.jilou.ui.container.Scene;
 import com.jilou.ui.logic.AbstractRenderer;
-import com.jilou.ui.logic.Renderer;
 import com.jilou.ui.widget.AbstractWidget;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 /**
@@ -64,9 +65,33 @@ public abstract class AbstractWidgetRenderer extends AbstractRenderer {
         if (nativeWindow instanceof AbstractWindow window) {
             Scene scene = window.getActiveScene();
             if(scene != null) {
-                render(scene.getWidgetList());
+                List<AbstractWidget> widgets = generateQueList(scene.getWidgetList());
+                render(widgets);
             }
         }
+    }
+
+    /**
+     * Generates a list of widgets by performing a depth-first traversal of the provided root widgets.
+     *
+     * @param root a list of root widgets to start the traversal; must not be {@code null}.
+     * @return a {@code List} containing all widgets discovered during the traversal,
+     *         including the root widgets and their descendants.
+     */
+    private List<AbstractWidget> generateQueList(List<AbstractWidget> root) {
+        List<AbstractWidget> result = new ArrayList<>();
+        Deque<AbstractWidget> stack = new ArrayDeque<>(root);
+        while (!stack.isEmpty()) {
+            AbstractWidget current = stack.pop();
+            result.add(current);
+
+            List<AbstractWidget> children = current.getChildren();
+            if (children != null && !children.isEmpty()) {
+                stack.addAll(children);
+            }
+        }
+
+        return result;
     }
 }
 
