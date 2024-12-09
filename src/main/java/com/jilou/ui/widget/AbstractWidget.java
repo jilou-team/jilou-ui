@@ -1,6 +1,8 @@
 package com.jilou.ui.widget;
 
 import com.jilou.ui.logic.Renderer;
+import com.jilou.ui.logic.callbacks.NativeWidgetCallbacks.*;
+import com.jilou.ui.logic.callbacks.trigger.HoverCallbackI;
 import com.jilou.ui.logic.graphics.WidgetBackgroundRenderer;
 import com.jilou.ui.styles.StyleSheet;
 import com.jilou.ui.utils.AlignmentUtils;
@@ -88,6 +90,16 @@ public abstract class AbstractWidget {
     private StyleSheet style;
 
     /**
+     * The hovered state as simple {@code boolean}.
+     */
+    private boolean hovered;
+
+    /**
+     * Callback for detect hover state for this {@code AbstractWidget}.
+     */
+    private HoverCallback hoverCallback;
+
+    /**
      * Constructs a new {@code AbstractWidget} with the specified localized name.
      *
      * @param localizedName the unique localized name of the widget
@@ -103,6 +115,8 @@ public abstract class AbstractWidget {
         this.innerParentX = 0;
         this.innerParentY = 0;
         this.setStyle(null);
+        this.hovered = false;
+        this.loadCallbacks();
     }
 
     /**
@@ -291,6 +305,38 @@ public abstract class AbstractWidget {
             }
         }
         return child;
+    }
+
+    /**
+     * Adds a new hover callback listener.
+     * <p>
+     * This method allows external code to register a custom hover callback listener
+     * that will be invoked when a hover event is triggered for this widget.
+     * </p>
+     *
+     * @param hoverCallbackI the hover callback listener to add; must implement {@link HoverCallbackI}
+     */
+    public void onHover(HoverCallbackI hoverCallbackI) {
+        this.hoverCallback.add(hoverCallbackI);
+    }
+
+    /**
+     * Initializes and loads the callbacks for this widget.
+     * <p>
+     * This method sets up the default hover callback for the widget and assigns
+     * a behavior to update the widget's hover state when a hover event occurs.
+     * Additional listeners can still be added via {@link #onHover(HoverCallbackI)}.
+     * </p>
+     * <p>
+     * The default hover callback updates the internal {@code hovered} state
+     * of the widget based on the hover event.
+     * </p>
+     */
+    private void loadCallbacks() {
+        this.hoverCallback = new HoverCallback();
+        this.hoverCallback.add((widget, hover) -> {
+            hovered = hover;
+        });
     }
 
 }

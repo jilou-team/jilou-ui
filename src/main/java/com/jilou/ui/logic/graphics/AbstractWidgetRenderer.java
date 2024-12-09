@@ -65,33 +65,9 @@ public abstract class AbstractWidgetRenderer extends AbstractRenderer {
         if (nativeWindow instanceof AbstractWindow window) {
             Scene scene = window.getActiveScene();
             if(scene != null) {
-                List<AbstractWidget> widgets = generateQueList(scene.getWidgetList());
-                render(widgets);
+                render(scene.getUnpackedWidgetList());
             }
         }
-    }
-
-    /**
-     * Generates a list of widgets by performing a depth-first traversal of the provided root widgets.
-     *
-     * @param root a list of root widgets to start the traversal; must not be {@code null}.
-     * @return a {@code List} containing all widgets discovered during the traversal,
-     *         including the root widgets and their descendants.
-     */
-    private List<AbstractWidget> generateQueList(List<AbstractWidget> root) {
-        List<AbstractWidget> result = new ArrayList<>();
-        Deque<AbstractWidget> stack = new ArrayDeque<>(root);
-        while (!stack.isEmpty()) {
-            AbstractWidget current = stack.pop();
-            result.add(current);
-
-            List<AbstractWidget> children = current.getChildren();
-            if (children != null && !children.isEmpty()) {
-                stack.addAll(children);
-            }
-        }
-
-        return result;
     }
 }
 

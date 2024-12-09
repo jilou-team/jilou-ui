@@ -16,23 +16,7 @@ import com.jilou.ui.utils.Color;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.glfw.Callbacks;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWCharCallbackI;
-import org.lwjgl.glfw.GLFWCharModsCallbackI;
-import org.lwjgl.glfw.GLFWCursorEnterCallbackI;
-import org.lwjgl.glfw.GLFWCursorPosCallbackI;
-import org.lwjgl.glfw.GLFWFramebufferSizeCallbackI;
-import org.lwjgl.glfw.GLFWKeyCallbackI;
-import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
-import org.lwjgl.glfw.GLFWScrollCallbackI;
-import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
-import org.lwjgl.glfw.GLFWWindowFocusCallbackI;
-import org.lwjgl.glfw.GLFWWindowIconifyCallbackI;
-import org.lwjgl.glfw.GLFWWindowMaximizeCallbackI;
-import org.lwjgl.glfw.GLFWWindowPosCallbackI;
-import org.lwjgl.glfw.GLFWWindowRefreshCallbackI;
-import org.lwjgl.glfw.GLFWWindowSizeCallbackI;
+import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLCapabilities;
@@ -142,6 +126,7 @@ public abstract class LWJGLWindow {
     private NativeSizeCallback sizeCallback;
     private NativePositionCallback positionCallback;
     private NativeFrameBufferSizeCallback frameBufferSizeCallback;
+    private NativeContentScaleCallback contentScaleCallback;
 
     private NativeScrollCallback scrollCallback;
     private NativeMouseButtonCallback mouseButtonCallback;
@@ -781,6 +766,15 @@ public abstract class LWJGLWindow {
     }
 
     /**
+     * Adds a content scale callback to handle monitor scale changes.
+     *
+     * @param lambda the {@link GLFWWindowContentScaleCallbackI} implementation to handle scale changes
+     */
+    public void addContentScaleCallback(GLFWWindowContentScaleCallbackI lambda) {
+        this.contentScaleCallback.add(lambda);
+    }
+
+    /**
      * Adds a close callback to handle window close events.
      *
      * @param lambda the {@link GLFWWindowCloseCallbackI} implementation to handle close events
@@ -1040,6 +1034,7 @@ public abstract class LWJGLWindow {
         GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
 
         this.context = new Context(windowHandle, capabilities);
+        calculateViewport();
     }
 
     /**
@@ -1048,7 +1043,6 @@ public abstract class LWJGLWindow {
     private void renderOpenGL(Runnable func) {
         GLCalculate.updateProjectionMatrix(width, height);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-        GL11.glViewport(0, 0, width, height);
         GL11.glClearColor(windowBackgroundColor.getRedPercent(), windowBackgroundColor.getGreenPercent(),
                 windowBackgroundColor.getBluePercent(), windowBackgroundColor.getAlphaPercent());
 
@@ -1062,6 +1056,36 @@ public abstract class LWJGLWindow {
 
         GLFW.glfwSwapBuffers(windowHandle);
         GLFW.glfwPollEvents();
+    }
+
+    /**
+     * Calculates and updates the OpenGL viewport based on the window content scale.
+     * <p>
+     * This method retrieves the content scale factors for the window (to account for high-DPI
+     * displays) and computes the framebuffer dimensions. The OpenGL viewport is then updated
+     * to match the calculated framebuffer size, ensuring proper rendering scaling.
+     * </p>
+     *
+     * <p>
+     * The content scale factors are provided by GLFW, and they adjust for scaling on displays
+     * with different DPI settings (e.g., 150% scaling on a 4K display). The viewport dimensions
+     * are calculated as:
+     * <pre>
+     * framebufferWidth = width * xScale;
+     * framebufferHeight = height * yScale;
+     * </pre>
+     * </p>
+     *
+     * @throws IllegalStateException if the window handle is invalid or if the content scale cannot be retrieved.
+     */
+    protected void calculateViewport() {
+        float[] xScale = new float[1];
+        float[] yScale = new float[1];
+        GLFW.glfwGetWindowContentScale(windowHandle, xScale, yScale);
+
+        int framebufferWidth = (int) (width * xScale[0]);
+        int framebufferHeight = (int) (height * yScale[0]);
+        GL11.glViewport(0, 0, framebufferWidth, framebufferHeight);
     }
 
     /**
@@ -1104,6 +1128,9 @@ public abstract class LWJGLWindow {
 
         this.frameBufferSizeCallback = new NativeFrameBufferSizeCallback();
         this.frameBufferSizeCallback.add(GLFW.glfwSetFramebufferSizeCallback(windowHandle, frameBufferSizeCallback));
+
+        this.contentScaleCallback = new NativeContentScaleCallback();
+        this.contentScaleCallback.add(GLFW.glfwSetWindowContentScaleCallback(windowHandle, contentScaleCallback));
 
         this.closeCallback = new NativeCloseCallback();
         this.closeCallback.add(GLFW.glfwSetWindowCloseCallback(windowHandle, closeCallback));

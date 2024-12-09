@@ -1,20 +1,6 @@
 package com.jilou.ui.logic.callbacks;
 
-import org.lwjgl.glfw.GLFWCharCallbackI;
-import org.lwjgl.glfw.GLFWCharModsCallbackI;
-import org.lwjgl.glfw.GLFWCursorEnterCallbackI;
-import org.lwjgl.glfw.GLFWCursorPosCallbackI;
-import org.lwjgl.glfw.GLFWFramebufferSizeCallbackI;
-import org.lwjgl.glfw.GLFWKeyCallbackI;
-import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
-import org.lwjgl.glfw.GLFWScrollCallbackI;
-import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
-import org.lwjgl.glfw.GLFWWindowFocusCallbackI;
-import org.lwjgl.glfw.GLFWWindowIconifyCallbackI;
-import org.lwjgl.glfw.GLFWWindowMaximizeCallbackI;
-import org.lwjgl.glfw.GLFWWindowPosCallbackI;
-import org.lwjgl.glfw.GLFWWindowRefreshCallbackI;
-import org.lwjgl.glfw.GLFWWindowSizeCallbackI;
+import org.lwjgl.glfw.*;
 
 /**
  * A collection of native GLFW callback wrappers that support multiple listeners for each event type.
@@ -52,6 +38,18 @@ public final class NativeCallbacks {
         public void invoke(long nativeHandle, int width, int height) {
             for (GLFWWindowSizeCallbackI callback : callbacks) {
                 callback.invoke(nativeHandle, width, height);
+            }
+        }
+    }
+
+    /**
+     * Handles window content scale events by invoking all registered {@link GLFWWindowContentScaleCallbackI} listeners.
+     */
+    public static class NativeContentScaleCallback extends Callback<GLFWWindowContentScaleCallbackI> implements GLFWWindowContentScaleCallbackI {
+        @Override
+        public void invoke(long window, float xScale, float yScale) {
+            for (GLFWWindowContentScaleCallbackI callback : callbacks) {
+                callback.invoke(window, xScale, yScale);
             }
         }
     }

@@ -3,9 +3,9 @@ package com.jilou.ui.container;
 import com.jilou.ui.ApplicationFactory;
 import com.jilou.ui.container.layout.Layout;
 import com.jilou.ui.widget.AbstractWidget;
+import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Represents a scene in the application, which contains a collection of widgets and a layout.
@@ -17,42 +17,73 @@ import java.util.List;
  * @since 0.1.0
  * @author Daniel Ramke
  */
+@Getter
 public class Scene {
 
     /**
      * The unique identifier for the {@code Scene}.
+     * Retrieves the unique identifier of the scene.
+     * return the unique identifier
      */
+    @Getter
     private final int id;
 
     /**
      * The localized name of the {@code Scene}, derived from its class name and ID.
+     * Retrieves the localized name of the scene.
+     * return the localized name
      */
+    @Getter
     private final String localizedName;
 
     /**
      * The list of {@link AbstractWidget} contained in the scene.
+     * Retrieves the list of widgets in the scene.
+     * return the list of widgets
      */
+    @Getter
     private List<AbstractWidget> widgetList;
 
     /**
-     * The container window associated with the scene.
+     * This list represent all contained {@link AbstractWidget}'s in this scene.
      */
+    private List<AbstractWidget> unpackedWidgetList;
+
+    private List<AbstractWidget> reverseUnpackedWidgetList;
+
+    /**
+     * The container window associated with the scene.
+     * Retrieves the container window associated with the scene.
+     * return the container window
+     */
+    @Getter
     private AbstractWindow container;
 
     /**
      * The root {@link Layout} of the scene.
+     * Retrieves the root layout of the scene.
+     * return the root layout
      */
+    @Getter
     private Layout root;
 
     /**
      * The {@code Scene} width.
+     * Retrieves the current width of the component.
+     * return the current width
      */
+    @Getter
     private int width;
 
     /**
      * The {@code Scene} height.
+     * Retrieves the current height of the component.
+     * return the current height
      */
+    @Getter
     private int height;
+
+    private boolean needSorted;
 
     /**
      * Constructs a scene with no root layout and no container.
@@ -86,6 +117,7 @@ public class Scene {
         }
         this.setContainer(container);
         this.setRoot(root);
+        this.needSorted = true;
     }
 
     /**
@@ -100,6 +132,17 @@ public class Scene {
             for (AbstractWidget widget : widgetList) {
                 widget.update();
             }
+        }
+
+        if(needSorted) {
+            this.unpackedWidgetList = generateQueList(widgetList);
+            unpackedWidgetList = unpackedWidgetList.stream()
+                    .sorted(Comparator.comparingInt(widget -> widget.getStyle().getZIndex()))
+                    .toList();
+
+            reverseUnpackedWidgetList = new ArrayList<>(unpackedWidgetList);
+            reverseUnpackedWidgetList.sort((widgetStart, widgetEnd) -> widgetEnd.getStyle().getZIndex() - widgetStart.getStyle().getZIndex());
+            needSorted = false;
         }
     }
 
@@ -120,6 +163,7 @@ public class Scene {
             root.setParent(this);
             this.widgetList = root.getWidgetList();
         }
+        this.needSorted = true;
     }
 
     /**
@@ -133,6 +177,7 @@ public class Scene {
         }
 
         widgetList.add(widget);
+        this.needSorted = true;
     }
 
     /**
@@ -158,6 +203,7 @@ public class Scene {
         AbstractWidget widget = getWidget(localizedName);
         widget.destroy();
         widgetList.remove(widget);
+        this.needSorted = true;
     }
 
     /**
@@ -213,33 +259,6 @@ public class Scene {
     }
 
     /**
-     * Retrieves the container window associated with the scene.
-     *
-     * @return the container window
-     */
-    public AbstractWindow getContainer() {
-        return container;
-    }
-
-    /**
-     * Retrieves the root layout of the scene.
-     *
-     * @return the root layout
-     */
-    public Layout getRoot() {
-        return root;
-    }
-
-    /**
-     * Retrieves the list of widgets in the scene.
-     *
-     * @return the list of widgets
-     */
-    public List<AbstractWidget> getWidgetList() {
-        return widgetList;
-    }
-
-    /**
      * Sets the width of the component.
      * <p>
      * If a root is present, its width is also updated to match its current width.
@@ -252,15 +271,6 @@ public class Scene {
         if (root != null) {
             root.setWidth(root.getWidth());
         }
-    }
-
-    /**
-     * Retrieves the current width of the component.
-     *
-     * @return the current width
-     */
-    public int getWidth() {
-        return width;
     }
 
     /**
@@ -279,30 +289,26 @@ public class Scene {
     }
 
     /**
-     * Retrieves the current height of the component.
+     * Generates a list of widgets by performing a depth-first traversal of the provided root widgets.
      *
-     * @return the current height
+     * @param root a list of root widgets to start the traversal; must not be {@code null}.
+     * @return a {@code List} containing all widgets discovered during the traversal,
+     *         including the root widgets and their descendants.
      */
-    public int getHeight() {
-        return height;
-    }
+    private List<AbstractWidget> generateQueList(List<AbstractWidget> root) {
+        List<AbstractWidget> result = new ArrayList<>();
+        Deque<AbstractWidget> stack = new ArrayDeque<>(root);
+        while (!stack.isEmpty()) {
+            AbstractWidget current = stack.pop();
+            result.add(current);
 
-    /**
-     * Retrieves the localized name of the scene.
-     *
-     * @return the localized name
-     */
-    public String getLocalizedName() {
-        return localizedName;
-    }
+            List<AbstractWidget> children = current.getChildren();
+            if (children != null && !children.isEmpty()) {
+                stack.addAll(children);
+            }
+        }
 
-    /**
-     * Retrieves the unique identifier of the scene.
-     *
-     * @return the unique identifier
-     */
-    public int getId() {
-        return id;
+        return result;
     }
 }
 

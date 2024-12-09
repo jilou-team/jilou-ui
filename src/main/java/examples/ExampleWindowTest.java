@@ -31,21 +31,47 @@ public class ExampleWindowTest {
         rectangle.getStyle().setBorderRadius(new Radius(10));
         rectangle.getStyle().setBackground(Background.fromColor(Color.WHITE));
 
+        rectangle.onHover((widget, hover) -> {
+            if (hover) {
+                widget.getStyle().setBackground(Background.fromColor(Color.RED));
+            } else {
+                widget.getStyle().setBackground(Background.fromColor(Color.WHITE));
+            }
+        });
+
         Rectangle rectangle2 = new Rectangle("Test2");
         rectangle2.setHeight(200);
         rectangle2.setWidth(200);
         rectangle2.setInnerParentX(200.0);
         rectangle2.setInnerParentY(120.0);
+        rectangle2.getStyle().setZIndex(1);
 
         rectangle2.getStyle().setBackground(Background.fromColor(Color.WHITE));
         rectangle2.getStyle().setAlignment(Alignment.CENTER);
         rectangle2.getStyle().setDropShadow(DropShadow.builder().layer(8).color(Color.rgba(0, 0, 0, 0.5)).strength(0.4f).offsetX(5).offsetY(-5).build());
+
+        rectangle2.onHover((widget, hover) -> {
+            if (hover) {
+                widget.getStyle().setBackground(Background.fromColor(Color.GREEN));
+            } else {
+                widget.getStyle().setBackground(Background.fromColor(Color.WHITE));
+            }
+        });
 
         Rectangle rectangle3 = new Rectangle("Test3");
         rectangle3.setHeight(50);
         rectangle3.setWidth(50);
 
         rectangle3.getStyle().setBackground(Background.fromColor(Color.WHITE));
+        rectangle3.getStyle().setZIndex(2);
+
+        rectangle3.onHover((widget, hover) -> {
+            if (hover) {
+                widget.getStyle().setBackground(Background.fromColor(Color.BLUE));
+            } else {
+                widget.getStyle().setBackground(Background.fromColor(Color.WHITE));
+            }
+        });
 
         rectangle2.addChild(rectangle3);
         rectangle.addChild(rectangle2);
