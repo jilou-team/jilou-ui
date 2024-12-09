@@ -1,6 +1,9 @@
 package com.jilou.ui.container;
 
 import com.jilou.ui.container.layout.Page;
+import com.jilou.ui.widget.AbstractWidget;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,13 +33,41 @@ import java.util.List;
  * @see LWJGLWindow
  * @author Daniel Ramke
  */
+@Getter
 public abstract class AbstractWindow extends LWJGLWindow {
 
+    /**
+     * {@code true} if rendering continues while minimized; {@code false} otherwise
+     * Sets whether the window should continue rendering while minimized.
+     *<p>
+     * renderAtMinimized {@code true} if rendering should continue while minimized;
+     *                   {@code false} otherwise
+     */
+    @Setter
     private boolean renderAtMinimized;
+
+    /**
+     * {@code true} if default callbacks are enabled; {@code false} otherwise
+     */
+    @Setter
     private boolean useDefaultCallbacks;
 
+    /**
+     * the list of scenes
+     */
     private final List<Scene> sceneList = new ArrayList<>();
+
+    /**
+     * scene the scene to set as active
+     * return the active scene
+     */
+    @Setter
     private Scene activeScene;
+
+    /**
+     * Store the current hovered {@link AbstractWidget}.
+     */
+    private AbstractWidget hoveredWidget;
 
     /**
      * Constructs an {@link AbstractWindow} with the specified localized name.
@@ -51,6 +82,7 @@ public abstract class AbstractWindow extends LWJGLWindow {
         this.setHeight(DEFAULT_HEIGHT);
         this.activeScene = new Scene(new Page(), this);
         this.addScene(activeScene);
+        this.hoveredWidget = null;
     }
 
     /**
@@ -125,43 +157,6 @@ public abstract class AbstractWindow extends LWJGLWindow {
         if (activeScene != null) {
             activeScene.setHeight(height);
         }
-    }
-
-    /**
-     * Sets whether the window should continue rendering while minimized.
-     *
-     * @param renderAtMinimized {@code true} if rendering should continue while minimized;
-     *                          {@code false} otherwise
-     */
-    public void setRenderAtMinimized(boolean renderAtMinimized) {
-        this.renderAtMinimized = renderAtMinimized;
-    }
-
-    /**
-     * Returns whether the window is configured to render while minimized.
-     *
-     * @return {@code true} if rendering continues while minimized; {@code false} otherwise
-     */
-    public boolean isRenderAtMinimized() {
-        return renderAtMinimized;
-    }
-
-    /**
-     * Sets whether default callbacks should be used.
-     *
-     * @param useDefaultCallbacks {@code true} to enable default callbacks; {@code false} otherwise
-     */
-    public void setUseDefaultCallbacks(boolean useDefaultCallbacks) {
-        this.useDefaultCallbacks = useDefaultCallbacks;
-    }
-
-    /**
-     * Checks if default callbacks are enabled.
-     *
-     * @return {@code true} if default callbacks are enabled; {@code false} otherwise
-     */
-    public boolean isUseDefaultCallbacks() {
-        return useDefaultCallbacks;
     }
 
     /**
@@ -275,24 +270,6 @@ public abstract class AbstractWindow extends LWJGLWindow {
     }
 
     /**
-     * Sets the active scene.
-     *
-     * @param scene the scene to set as active
-     */
-    public void setActiveScene(Scene scene) {
-        this.activeScene = scene;
-    }
-
-    /**
-     * Retrieves the currently active scene.
-     *
-     * @return the active scene
-     */
-    public Scene getActiveScene() {
-        return activeScene;
-    }
-
-    /**
      * Navigates to a scene by its ID.
      *
      * @param id the ID of the scene to navigate to
@@ -338,31 +315,80 @@ public abstract class AbstractWindow extends LWJGLWindow {
     }
 
     /**
-     * Retrieves the list of all scenes managed by this manager.
-     *
-     * @return the list of scenes
-     */
-    public List<Scene> getSceneList() {
-        return sceneList;
-    }
-
-    /**
      * Loads the default callbacks if they are enabled.
      */
+    @SuppressWarnings("java:S3776")
     private void loadDefaultCallbacks() {
         if (useDefaultCallbacks) {
             addPositionCallback((handle, posX, posY) -> {
 
             });
 
-            addFrameBufferSizeCallback((handle, width, height) -> {
+            addSizeCallback((handle, width, height) -> {
                 this.width = width;
                 this.height = height;
+
+                calculateViewport();
+            });
+
+            addFrameBufferSizeCallback((handle, width, height) -> {
                 if(activeScene != null) {
                     activeScene.setWidth(width);
                     activeScene.setHeight(height);
                 }
+                calculateViewport();
+            });
+
+            addContentScaleCallback((handle, scaleX, scaleY) -> calculateViewport());
+
+            addMousePositionCallback((handle, posX, posY) -> {
+                if(activeScene != null) {
+                    for (AbstractWidget widget : activeScene.getReverseUnpackedWidgetList()) {
+                        boolean hovered = isMouseOverWidget(widget, posX, posY);
+
+                        if (hovered) {
+                            if (hoveredWidget != null && !hoveredWidget.equals(widget) && hoveredWidget.isHovered()) {
+                                    hoveredWidget.getHoverCallback().onHover(hoveredWidget, false);
+                            }
+
+                            if (!widget.isHovered()) {
+                                hoveredWidget = widget;
+                                widget.getHoverCallback().onHover(hoveredWidget, true);
+                            }
+                            break;
+                        } else {
+                            if (widget.isHovered()) {
+                                widget.getHoverCallback().onHover(widget, false);
+                                hoveredWidget = null;
+                            }
+                        }
+                    }
+                }
             });
         }
     }
+
+    /**
+     * Determines if the mouse pointer is hovering over a specific widget.
+     * <p>
+     * This method checks whether the mouse pointer is within the bounds of the given widget,
+     * based on its position and dimensions.
+     * </p>
+     *
+     * @param widget the widget to check against. If {@code null}, the method will return {@code false}.
+     * @param mouseX the x-coordinate of the mouse pointer.
+     * @param mouseY the y-coordinate of the mouse pointer.
+     * @return {@code true} if the mouse pointer is over the widget, {@code false} otherwise.
+     *         Returns {@code false} if the widget is {@code null}.
+     */
+    private boolean isMouseOverWidget(AbstractWidget widget, double mouseX, double mouseY) {
+        if (widget == null) return false;
+        double posX = widget.getPositionX();
+        double posY = widget.getPositionY();
+        double widgetWidth = widget.getWidth();
+        double widgetHeight = widget.getHeight();
+        return mouseX >= posX && mouseX <= posX + widgetWidth &&
+                mouseY >= posY && mouseY <= posY + widgetHeight;
+    }
+
 }
