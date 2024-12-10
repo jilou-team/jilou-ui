@@ -1,6 +1,6 @@
 package com.jilou.ui.styles.types;
 
-import com.jilou.ui.enums.BorderType;
+import com.jilou.ui.enums.css.BorderType;
 import com.jilou.ui.utils.Color;
 import lombok.Builder;
 import lombok.Getter;

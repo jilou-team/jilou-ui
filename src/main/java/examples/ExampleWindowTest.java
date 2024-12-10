@@ -8,7 +8,7 @@ import com.jilou.ui.styles.types.Background;
 import com.jilou.ui.styles.types.DropShadow;
 import com.jilou.ui.styles.types.Radius;
 import com.jilou.ui.utils.Color;
-import com.jilou.ui.utils.format.Alignment;
+import com.jilou.ui.enums.css.Alignment;
 import com.jilou.ui.widget.shapes.Rectangle;
 
 public class ExampleWindowTest {

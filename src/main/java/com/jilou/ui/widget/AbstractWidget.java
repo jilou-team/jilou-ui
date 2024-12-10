@@ -6,7 +6,7 @@ import com.jilou.ui.logic.callbacks.trigger.HoverCallbackI;
 import com.jilou.ui.logic.graphics.WidgetBackgroundRenderer;
 import com.jilou.ui.styles.StyleSheet;
 import com.jilou.ui.utils.AlignmentUtils;
-import com.jilou.ui.utils.format.Alignment;
+import com.jilou.ui.enums.css.Alignment;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
