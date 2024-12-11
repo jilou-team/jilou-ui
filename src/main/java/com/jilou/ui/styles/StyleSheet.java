@@ -5,7 +5,7 @@ import com.jilou.ui.styles.types.Border;
 import com.jilou.ui.styles.types.Radius;
 import com.jilou.ui.styles.types.DropShadow;
 import com.jilou.ui.utils.Color;
-import com.jilou.ui.utils.format.Alignment;
+import com.jilou.ui.enums.css.Alignment;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

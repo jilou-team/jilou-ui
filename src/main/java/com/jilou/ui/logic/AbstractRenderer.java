@@ -2,6 +2,7 @@ package com.jilou.ui.logic;
 
 import com.jilou.ui.ApplicationFactory;
 import com.jilou.ui.container.LWJGLWindow;
+import com.jilou.ui.enums.RenderPriority;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
