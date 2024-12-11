@@ -12,7 +12,7 @@ import com.jilou.ui.utils.Color;
 import com.jilou.ui.enums.css.Alignment;
 import com.jilou.ui.widget.shapes.Rectangle;
 
-public class ExampleWindowTest {
+public final class ExampleWindowTest {
 
     public static void main(String[] args) {
         JilouUI.load(args);

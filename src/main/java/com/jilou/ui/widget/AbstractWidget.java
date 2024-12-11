@@ -133,11 +133,6 @@ public abstract class AbstractWidget {
     }
 
     /**
-     * Handles input events for the widget. This method must be implemented by subclasses.
-     */
-    public abstract void input();
-
-    /**
      * Cleans up resources associated with the widget. This method must be implemented by subclasses.
      */
     public abstract void destroy();
