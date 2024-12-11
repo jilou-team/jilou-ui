@@ -3,6 +3,7 @@ package com.jilou.ui;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.system.MemoryUtil;
 
 /**
@@ -47,6 +48,7 @@ public final class JilouUI {
         }
 
         generateCLibraryNatives();
+        terminateHandle();
     }
 
     /**
@@ -55,13 +57,26 @@ public final class JilouUI {
      * @throws IllegalStateException if the check was failed.
      */
     private static void generateCLibraryNatives() {
-        if (!(GLFW.glfwInit())) {
-            LOGGER.fatal("Failed to initialize GLFW");
-            GLFW.glfwSetErrorCallback((error, description) -> LOGGER.error("GLFW error: {}, {}", error, MemoryUtil.memUTF8(description)));
-            throw new IllegalStateException("Failed to initialize GLFW");
+        try (GLFWErrorCallback errorCallback = GLFW.glfwSetErrorCallback((error, description) ->
+                LOGGER.error("GLFW error: {}, {}", error, MemoryUtil.memUTF8(description)))) {
+            if (!(GLFW.glfwInit())) {
+                LOGGER.fatal("Failed to initialize GLFW");
+                throw new IllegalStateException("Failed to initialize GLFW");
+            }
+            LOGGER.debug("GLFW initialized");
         }
+    }
 
-        LOGGER.info("GLFW initialized");
+    /**
+     * Function destroy the GLFW context and free the V-RAM and RAM. This is called at the {@link #load(String[])}
+     * function. It works with {@link Runtime#addShutdownHook(Thread)} for handle resource leaks after closing the host
+     * {@link Runtime}.
+     */
+    private static void terminateHandle() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            LOGGER.debug("Shutting down GLFW");
+            GLFW.glfwTerminate();
+        }, "Shutdown"));
     }
 
 }

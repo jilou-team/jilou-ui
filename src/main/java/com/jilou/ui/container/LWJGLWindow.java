@@ -166,9 +166,18 @@ public abstract class LWJGLWindow {
      * his context!
      */
     protected void run() {
-        initialize();
-        nativeUpdate();
-        destroy();
+        LOGGER.debug("Phase: Initializing...");
+        initialize(); // Initialisiert Ressourcen
+        LOGGER.debug("Phase: Native update...");
+        try {
+            nativeUpdate(); // Hauptschleife
+        } catch (Exception e) {
+            LOGGER.error("Error during native update", e);
+        } finally {
+            LOGGER.debug("Phase: Cleaning up...");
+            destroy(); // Ressourcenfreigabe
+            LOGGER.debug("Phase: Destroy completed.");
+        }
     }
 
     /* ############################################################################################

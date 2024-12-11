@@ -1,6 +1,7 @@
 package com.jilou.ui.logic.graphics.font;
 
 import com.jilou.ui.utils.Files;
+import com.jilou.ui.utils.Paths;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -101,13 +102,13 @@ public class Font {
 
             String packedName = fileFontName + "-" + faceName;
 
-/*            if (getFace(packedName) != null) {
+            if (getFace(packedName) != null) {
                 if (!updated) {
                     continue;
                 }
                 duplicate++;
                 continue;
-            }*/
+            }
 
             fontFaces.add(new FontFaces(getAbsolutePath(), packedName));
             valid++;
@@ -116,6 +117,22 @@ public class Font {
         logger.info("Font [{}] faces have been updated! Valid [{}], Invalid [{}], Duplicated [{}]", fontName, valid, invalid, duplicate);
         this.created = true;
         this.updated = true;
+    }
+
+    public FontFaces getFace(String name) {
+        if(fontFaces.isEmpty()) return null;
+        String formatted = name;
+        if(!(name.contains("-"))) {
+            formatted = getFontName() + "-" + name;
+        }
+        FontFaces face = null;
+        for(FontFaces faces : fontFaces) {
+            if(faces.getFaceName().equals(formatted)) {
+                face = faces;
+                break;
+            }
+        }
+        return face;
     }
 
     private boolean isValidFontFile(String name) {
@@ -132,4 +149,5 @@ public class Font {
         return new String[]{fontName, faceName};
     }
 
+    public static Font FALLBACK = new Font(Paths.internal("/assets/fonts/"), "Default");
 }
