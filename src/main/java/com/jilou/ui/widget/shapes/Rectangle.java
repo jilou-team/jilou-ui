@@ -9,11 +9,6 @@ public class Rectangle extends AbstractWidget {
     }
 
     @Override
-    public void input() {
-        /* Handle inputs */
-    }
-
-    @Override
     public void destroy() {
         /* Things which need remove */
     }

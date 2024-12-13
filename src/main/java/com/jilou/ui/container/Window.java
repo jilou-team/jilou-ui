@@ -86,6 +86,6 @@ public class Window extends AbstractWindow {
      */
     @Override
     protected void destroy() {
-        /**/
+        super.destroy();
     }
 }

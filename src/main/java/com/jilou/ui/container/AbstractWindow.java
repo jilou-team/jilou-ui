@@ -4,6 +4,7 @@ import com.jilou.ui.container.layout.Page;
 import com.jilou.ui.widget.AbstractWidget;
 import lombok.Getter;
 import lombok.Setter;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -125,6 +126,11 @@ public abstract class AbstractWindow extends LWJGLWindow {
             }
             renderNative(this::render);
         }
+    }
+
+    @Override
+    protected void destroy() {
+        GLFW.glfwDestroyWindow(getWindowHandle());
     }
 
     /**

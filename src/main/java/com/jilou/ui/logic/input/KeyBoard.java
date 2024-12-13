@@ -1,5 +1,8 @@
 package com.jilou.ui.logic.input;
 
+import com.jilou.ui.enums.io.Action;
+import com.jilou.ui.enums.io.Input;
+
 /**
  * This class is used for interact with keyboard.
  * This is important for interact with windows or components.

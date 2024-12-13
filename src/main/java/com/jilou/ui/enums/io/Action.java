@@ -1,4 +1,4 @@
-package com.jilou.ui.logic.input;
+package com.jilou.ui.enums.io;
 
 import org.lwjgl.glfw.GLFW;
 
