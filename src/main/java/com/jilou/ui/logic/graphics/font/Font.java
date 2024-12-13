@@ -20,6 +20,7 @@ public class Font {
 
     private boolean created;
     private boolean updated;
+    private boolean test;
 
     private String errorReason;
 
@@ -49,6 +50,13 @@ public class Font {
         updated = false;
         this.fetchFaces();
         logger.debug("Font [{}] has been updated", fontName);
+    }
+
+    public void nativeLoadBuffers() {
+        for(FontFaces face : fontFaces) {
+            face.buildBuffer();
+        }
+        test = true;
     }
 
     public String getAbsolutePath() {
@@ -136,7 +144,7 @@ public class Font {
     }
 
     private boolean isValidFontFile(String name) {
-        return name.endsWith(".ttf") && name.contains("-") && name.indexOf('-') > 0 && name.lastIndexOf('.') > name.indexOf('-');
+        return name.endsWith(".ttf") && name.contains("-") && name.indexOf('-') >= 0 && name.lastIndexOf('.') > name.indexOf('-');
     }
 
     private String[] extractFontNameAndFace(String name) {
@@ -149,5 +157,5 @@ public class Font {
         return new String[]{fontName, faceName};
     }
 
-    public static Font FALLBACK = new Font(Paths.internal("/assets/fonts/"), "Default");
+    public static final Font FALLBACK = new Font(Paths.internal("/assets/fonts/"), "Default");
 }

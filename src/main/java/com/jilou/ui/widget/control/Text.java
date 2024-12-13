@@ -8,14 +8,14 @@ import com.jilou.ui.widget.AbstractWidget;
 import lombok.Getter;
 
 @Getter
-public class Label extends AbstractWidget {
+public class Text extends AbstractWidget {
 
-    private String text;
+    private String message;
     private Font font;
 
-    public Label(String text) {
+    public Text(String message) {
         super(null);
-        this.text = text == null ? "" : text;
+        this.message = message == null ? "" : message;
         this.font = Font.FALLBACK;
         this.setHeight(20.0);
         this.setWidth(80.0);
@@ -24,7 +24,7 @@ public class Label extends AbstractWidget {
         this.getStyle().setBorder(Border.builder().thickness(1).build());
     }
 
-    public Label() {
+    public Text() {
         this("Label");
     }
 
@@ -33,9 +33,9 @@ public class Label extends AbstractWidget {
         else this.font = font;
     }
 
-    public void setText(String text) {
-        if(text == null) text = "";
-        this.text = text;
+    public void setMessage(String message) {
+        if(message == null) message = "";
+        this.message = message;
     }
 
     @Override

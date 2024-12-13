@@ -4,7 +4,6 @@ import com.jilou.ui.JilouUI;
 import com.jilou.ui.container.Scene;
 import com.jilou.ui.container.Window;
 import com.jilou.ui.enums.Backend;
-import com.jilou.ui.logic.graphics.font.Font;
 import com.jilou.ui.styles.types.Background;
 import com.jilou.ui.styles.types.DropShadow;
 import com.jilou.ui.styles.types.Radius;
@@ -16,8 +15,6 @@ public final class ExampleWindowTest {
 
     public static void main(String[] args) {
         JilouUI.load(args);
-
-        Font testFont = Font.FALLBACK;
 
         Window window = new Window();
         window.setBackend(Backend.VULKAN);
