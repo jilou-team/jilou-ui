@@ -1,4 +1,4 @@
-package com.jilou.ui.utils.format;
+package com.jilou.ui.enums.css;
 
 import lombok.Getter;
 

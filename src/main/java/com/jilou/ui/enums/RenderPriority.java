@@ -1,4 +1,6 @@
-package com.jilou.ui.logic;
+package com.jilou.ui.enums;
+
+import com.jilou.ui.logic.Renderer;
 
 /**
  * Represents the priority levels for rendering tasks in the JilouUI framework.

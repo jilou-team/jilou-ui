@@ -1,5 +1,7 @@
 package com.jilou.ui.logic.input;
 
+import com.jilou.ui.enums.io.Action;
+
 /**
  * This class allowed the interaction with mouse.
  * The mouse can be used for interact with window and components.

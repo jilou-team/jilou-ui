@@ -1,6 +1,7 @@
 package com.jilou.ui.logic;
 
 import com.jilou.ui.container.LWJGLWindow;
+import com.jilou.ui.enums.RenderPriority;
 
 /**
  * Represents a rendering system for graphical elements in the JilouUI framework.
