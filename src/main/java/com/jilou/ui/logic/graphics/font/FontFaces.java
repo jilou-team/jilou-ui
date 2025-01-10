@@ -64,12 +64,13 @@ public class FontFaces {
 
         int bitmapWidth = 512;
         int bitmapHeight = 1024;
+
         ByteBuffer bitmap = BufferUtils.createByteBuffer(bitmapWidth * bitmapHeight);
-        STBTTBakedChar.Buffer charData = STBTTBakedChar.malloc(96);
+        STBTTBakedChar.Buffer charData = STBTTBakedChar.malloc(255 - 33);
 
         int result = STBTruetype.stbtt_BakeFontBitmap(
                 buffer,
-                16.0f, // Variable
+                22.0f, // Variable
                 bitmap,
                 bitmapWidth,
                 bitmapHeight,

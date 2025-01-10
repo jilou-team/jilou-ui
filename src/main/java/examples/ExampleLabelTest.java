@@ -16,7 +16,7 @@ public final class ExampleLabelTest {
         window.setTitle("Example Label");
 
         Scene scene = window.getActiveScene();
-        Text label = new Text("Hallo Fabian!");
+        Text label = new Text("abcdefghijklmnopqrstuvwxyzäöü ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ 1234567890 !§$%&/()=?²³{[]} #'*+~^°@€;,.:-_<>|´`µ");
         label.setPosition(20, 200);
 
         scene.add(label);
